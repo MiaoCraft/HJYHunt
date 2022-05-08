@@ -71,7 +71,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -92,7 +92,14 @@
             <artifactId>AdvancedReplay</artifactId>
             <version>LOCAL</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/Replay (2).jar</systemPath>
+            <systemPath>${project.basedir}/libs/Replay.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>Jumper251</groupId>
+            <artifactId>PlaceholderAPI</artifactId>
+            <version>LOCAL</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/PlaceholderAPI.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.sonatype.sisu</groupId>
