@@ -8,16 +8,13 @@ import me.jumper251.replay.replaysystem.data.ReplayData;
 import me.jumper251.replay.utils.LogUtils;
 import me.jumper251.replay.utils.fetcher.Acceptor;
 import me.jumper251.replay.utils.fetcher.Consumer;
+import net.mcxk.minehunt.MineHunt;
 import net.mcxk.minehunt.game.Game;
+import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -25,13 +22,13 @@ import java.util.zip.GZIPOutputStream;
 public class MHRecordSaver implements IReplaySaver {
     public static File DIR;
     private boolean reformatting;
-    private ExecutorService pool = Executors.newCachedThreadPool();
 
     public MHRecordSaver(Game game) {
         SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         DIR = new File(ReplaySystem.getInstance().getDataFolder() + "/replays/" + time.format(new Date()));
     }
 
+    @Override
     public void saveReplay(Replay replay) {
         if (!DIR.exists()) {
             DIR.mkdirs();
@@ -58,8 +55,10 @@ public class MHRecordSaver implements IReplaySaver {
 
     }
 
+    @Override
     public void loadReplay(final String replayName, Consumer<Replay> consumer) {
-        this.pool.execute(new Acceptor<Replay>(consumer) {
+        Bukkit.getScheduler().runTaskAsynchronously(MineHunt.getInstance(), new Acceptor<Replay>(consumer) {
+            @Override
             public Replay getValue() {
                 try {
                     File file = new File(DefaultReplaySaver.DIR, replayName + ".replay");
@@ -82,11 +81,13 @@ public class MHRecordSaver implements IReplaySaver {
         });
     }
 
+    @Override
     public boolean replayExists(String replayName) {
         File file = new File(DIR, replayName + ".replay");
         return file.exists();
     }
 
+    @Override
     public void deleteReplay(String replayName) {
         File file = new File(DIR, replayName + ".replay");
         if (file.exists()) {
@@ -98,7 +99,7 @@ public class MHRecordSaver implements IReplaySaver {
     public void reformatAll() {
         this.reformatting = true;
         if (DIR.exists()) {
-            Arrays.stream(DIR.listFiles()).filter((file) -> file.isFile() && file.getName().endsWith(".replay")).map(File::getName).collect(Collectors.toList()).forEach((file) -> {
+            Arrays.stream(Objects.requireNonNull(DIR.listFiles())).filter((file) -> file.isFile() && file.getName().endsWith(".replay")).map(File::getName).collect(Collectors.toList()).forEach((file) -> {
                 this.reformat(file.replaceAll("\\.replay", ""));
             });
         }
@@ -127,11 +128,12 @@ public class MHRecordSaver implements IReplaySaver {
         });
     }
 
+    @Override
     public List<String> getReplays() {
-        List<String> files = new ArrayList();
+        List<String> files = new ArrayList<>();
         if (DIR.exists()) {
 
-            for (File file : DIR.listFiles()) {
+            for (File file : Objects.requireNonNull(DIR.listFiles())) {
                 if (file.isFile() && file.getName().endsWith(".replay")) {
                     files.add(file.getName().replaceAll("\\.replay", ""));
                 }

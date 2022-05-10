@@ -1,9 +1,14 @@
 package net.mcxk.minehunt.util;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Util {
     /**
@@ -61,4 +66,40 @@ public class Util {
         loc.setPitch(pitch * 180f / (float) Math.PI);
         return loc;
     }
+
+    /**
+     * 快捷构建发送消息组件工具类
+     *
+     * @param text   消息内容
+     * @param isBold 是否粗体
+     * @param color  字体颜色
+     * @return 消息组件
+     */
+    public static TextComponent buildTextComponent(String text, Boolean isBold, ChatColor color) {
+        return buildTextComponent(text, isBold, color, null);
+    }
+
+    /**
+     * 快捷构建发送消息组件工具类
+     *
+     * @param text    消息内容
+     * @param isBold  是否粗体
+     * @param color   字体颜色
+     * @param command 点击触发指令
+     * @return 消息组件
+     */
+    public static TextComponent buildTextComponent(String text, Boolean isBold, ChatColor color, String command) {
+        final TextComponent textComponent = new TextComponent(text);
+        if (Objects.nonNull(isBold)) {
+            textComponent.setBold(isBold);
+        }
+        if (Objects.nonNull(color)) {
+            textComponent.setColor(color);
+        }
+        if (StringUtils.isNotEmpty(command)) {
+            textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        }
+        return textComponent;
+    }
+
 }

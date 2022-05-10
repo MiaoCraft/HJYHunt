@@ -38,8 +38,20 @@ L3Player: 16
 #第三阶梯逃亡者数量
 L3Runner: 4
 
+#是否允许选择队伍
+SelectTeam: true
+
+#是否需要手动确认准备
+ConfirmPrepare: true
+
+#最小准备就绪玩家数量（-1所有）
+MinPrepare: -1
+
 #是否开局解锁指南针
 CompassUnlocked: true
+
+#是否结束游戏自动踢出所有玩家
+AutoKick: true
 
 #是否结束游戏自动重启
 AutoRestart: true
@@ -62,7 +74,7 @@ YRandom: 10
 WarnDistance: 50
 
 #开局倒计时时长
-Countdown: 30
+Countdown: 10
 
 #逃亡者警告消息(%wd是警告距离就是上面那个，%d是当前距离）
 WarnDistanceSafe: "%wdM 内未检测到猎人"

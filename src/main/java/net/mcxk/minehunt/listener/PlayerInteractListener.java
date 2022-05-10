@@ -41,6 +41,9 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
+    /**
+     * 主要是统计展示的对队友输出最多的玩家
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void teamDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) {
@@ -49,14 +52,17 @@ public class PlayerInteractListener implements Listener {
         if (!(event.getDamager() instanceof Player)) {
             return;
         }
+        // 只处理玩家对玩家的伤害
         Player player1 = (Player) event.getEntity();
         Player player2 = (Player) event.getDamager();
 
         Optional<PlayerRole> player1Role = plugin.getGame().getPlayerRole(player1);
         Optional<PlayerRole> player2Role = plugin.getGame().getPlayerRole(player2);
         if (player1Role.isPresent() && player2Role.isPresent()) {
+            // 角色类型相同
             if (player1Role.get() == player2Role.get()) {
                 double historyDamage = plugin.getGame().getTeamDamageData().getOrDefault(player2, 0.0d);
+                // 累计造成的伤害
                 historyDamage += event.getFinalDamage();
                 plugin.getGame().getTeamDamageData().put(player2, historyDamage);
             }

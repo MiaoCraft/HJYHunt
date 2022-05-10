@@ -1,9 +1,11 @@
 name: MineHunt
-version: 2.1.8
+version: '${project.version}'
 main: net.mcxk.minehunt.MineHunt
 api-version: 1.16
 soft-depend: [ NoteBlockAPI, AdvancedReplay, PlaceholderAPI ]
 commands:
   minehunt:
-    description: 作者懒得写，我也懒得写，自己去看简介去~
-    usage: 你猜咋用（其实就是懒得写）
+    description: 猎人游戏指令
+    usage: /<command> [copyright|hunter|runner|resetcountdown|players|forcestart|want|prepare]
+
+

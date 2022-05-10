@@ -1,5 +1,16 @@
 package net.mcxk.minehunt.game;
 
 public enum GameStatus {
-    WAITING_PLAYERS, GAME_STARTED, ENDED
+    /**
+     * 等待开始
+     */
+    WAITING_PLAYERS,
+    /**
+     * 游戏进行中
+     */
+    GAME_STARTED,
+    /**
+     * 游戏结算
+     */
+    ENDED
 }
