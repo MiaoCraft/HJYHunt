@@ -4,6 +4,12 @@
 # 一般会在2天内修复（除非我懒）
 # 下面是插件配置文件www~
 
+#指定种子（需要在当前配置目录放种子文件seeds.txt，每行一个种子）
+LevelSeed: true
+
+#下一个种子行数（0为第一行）
+LevelSeedNum: 0
+
 #本局最大玩家数
 max-players: 16
 

@@ -1,5 +1,6 @@
 package net.mcxk.minehunt;
 
+import com.google.common.base.Charsets;
 import lombok.Getter;
 import net.mcxk.minehunt.commands.MineHuntCommand;
 import net.mcxk.minehunt.game.ConstantCommand;
@@ -7,12 +8,17 @@ import net.mcxk.minehunt.game.Game;
 import net.mcxk.minehunt.listener.*;
 import net.mcxk.minehunt.placeholder.Placeholder;
 import net.mcxk.minehunt.watcher.CountDownWatcher;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Properties;
 
 public final class MineHunt extends JavaPlugin {
     @Getter
@@ -61,6 +67,49 @@ public final class MineHunt extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        final FileConfiguration config = getConfig();
+        if (!config.getBoolean("LevelSeed")) {
+            return;
+        }
+        final String serverPath = System.getProperty("user.dir");
+        try {
+            int seedNum = config.getInt("LevelSeedNum");
+            final BufferedReader seedReader = getTextSeed();
+            String seed = "";
+            for (int i = 0; i <= seedNum; i++) {
+                if (i == seedNum) {
+                    seed = seedReader.readLine();
+                } else {
+                    seedReader.readLine();
+                }
+            }
+            if (StringUtils.isEmpty(seed)) {
+                seed = "";
+            }
+            config.set("LevelSeedNum", seedNum + 1);
+            config.save(serverPath + "\\plugins\\MineHunt\\config.yml");
+            final File propertiesFile = new File(serverPath + "\\server.properties");
+            final InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(propertiesFile), Charsets.UTF_8);
+            Properties server = new Properties();
+            server.load(inputStreamReader);
+            System.out.println("读取到新的种子：" + seed);
+            server.setProperty("level-seed", seed);
+            server.store(new OutputStreamWriter(new FileOutputStream(propertiesFile), StandardCharsets.UTF_8), "propeties,write:level-seed");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private BufferedReader getTextSeed() {
+        Reader reader = getTextResource("seeds.txt");
+        if (Objects.isNull(reader)) {
+            saveResource("seeds.txt", false);
+            reader = getTextResource("seeds.txt");
+            if (Objects.isNull(reader)) {
+                throw new RuntimeException("读取不到：" + "seeds.txt");
+            }
+        }
+        return new BufferedReader(reader);
     }
 
 
