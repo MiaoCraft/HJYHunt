@@ -45,7 +45,7 @@ public class ProgressDetectingListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void changeDim(PlayerPortalEvent event) {
         if (event.getTo().getWorld().getEnvironment() == World.Environment.NETHER) {
-            plugin.getGame().getProgressManager().unlockProgress(GameProgress.ENTER_NETHER);
+            plugin.getGame().getProgressManager().unlockProgress(GameProgress.ENTER_NETHER, event.getPlayer());
             return;
         }
         if (event.getTo().getWorld().getEnvironment() == World.Environment.THE_END) {
@@ -56,7 +56,7 @@ public class ProgressDetectingListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void teleport(PlayerTeleportEvent event) {
         if (event.getTo().getWorld().getEnvironment() == World.Environment.NETHER) {
-            plugin.getGame().getProgressManager().unlockProgress(GameProgress.ENTER_NETHER);
+            plugin.getGame().getProgressManager().unlockProgress(GameProgress.ENTER_NETHER, event.getPlayer());
             return;
         }
         if (event.getTo().getWorld().getEnvironment() == World.Environment.THE_END) {

@@ -29,7 +29,42 @@ public class Game {
      * 团队内伤害数据
      */
     @Getter
-    final Map<Player, Double> teamDamageData = new HashMap<>();
+    private final Map<Player, Double> teamDamageData = new HashMap<>();
+    /**
+     * 逃亡者攻击末影龙伤害数据
+     */
+    @Getter
+    private final Map<Player, Double> teamDamageEndDragonData = new HashMap<>();
+
+    /**
+     * 首次攻击到逃亡者玩家
+     */
+    @Getter
+    @Setter
+    private Player firstTeamPlayer = null;
+
+    /**
+     * 首次击杀到猎人玩家
+     */
+    @Getter
+    @Setter
+    private Player firstKillPlayer = null;
+
+    /**
+     * 首次获得全套铁甲猎人
+     */
+    @Getter
+    @Setter
+    private Player firstAllArmourPlayer = null;
+
+    /**
+     * 首次进入地狱的逃亡者
+     */
+    @Getter
+    @Setter
+    private Player firstEnterNetherPlayer = null;
+
+
     private final MineHunt plugin = MineHunt.getInstance();
     /**
      * 正在进行游戏的玩家
@@ -58,7 +93,7 @@ public class Game {
      * 线程安全
      */
     @Getter
-    private Map<Player, PlayerRole> roleMapping;
+    private Map<Player, PlayerRole> roleMapping = new HashMap<>();
     /**
      * 玩家意向角色
      * 线程安全
@@ -112,6 +147,8 @@ public class Game {
     private final int YBasic = plugin.getConfig().getInt("YBasic");
     private final boolean AutoRestart = plugin.getConfig().getBoolean("AutoRestart");
 
+    @Getter
+    private final boolean friendsHurt = plugin.getConfig().getBoolean("FriendsHurt");
 
     public void switchCompass(boolean unlocked) {
         if (this.compassUnlocked == unlocked) {
@@ -260,7 +297,7 @@ public class Game {
         Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(getPlayersAsRole(PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
         Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(getPlayersAsRole(PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
         this.registerWatchers();
-        plugin.getGame().getProgressManager().unlockProgress(GameProgress.GAME_STARTING);
+        plugin.getGame().getProgressManager().unlockProgress(GameProgress.GAME_STARTING, null);
     }
 
     public void switchWorldRuleForReady(boolean ready) {
@@ -325,6 +362,7 @@ public class Game {
             getGameEndingData().setWalkMaster(baker.getWalkingMaster());
             getGameEndingData().setJumpMaster(baker.getJumpMaster());
             getGameEndingData().setTeamKiller(baker.getTeamBadGuy());
+            getGameEndingData().setTeamEndDragon(baker.getTeamEndDragonBadGuy());
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this::sendEndingAnimation, 20 * 10);
         }, 20 * 10);
     }
@@ -378,6 +416,10 @@ public class Game {
         }
         if (StringUtils.isNotBlank(gameEndingData.getTeamKiller())) {
             Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.DARK_RED + plugin.getConfig().getString("TeamKiller"), gameEndingData.getTeamKiller(), 0, 20000, 0));
+            Thread.sleep(sleep);
+        }
+        if (StringUtils.isNotBlank(gameEndingData.getTeamEndDragon())) {
+            Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.DARK_RED + plugin.getConfig().getString("TeamEndDragon"), gameEndingData.getTeamEndDragon(), 0, 20000, 0));
             Thread.sleep(sleep);
         }
         if (StringUtils.isNotBlank(gameEndingData.getWalkMaster())) {

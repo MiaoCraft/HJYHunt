@@ -13,6 +13,9 @@ min-players: 2
 #本局最大Runner数（这东西我基本用不到了但是还是不敢删免得出问题）
 runner-max: 2
 
+# 是否开启友伤
+FriendsHurt: false
+
 #第零阶梯玩家数量（大于等于该数量Runner会设置对应阶梯数量，下同）
 #如L0Player=2 L0Hunter=1即在总玩家达到2及以上的时候，猎人数为1）
 L0Player: 2
@@ -72,16 +75,21 @@ YRandom: 10
 #也就是原本的是距离xyz的平方和，已修复为正常的距离（应该没问题了）
 #建议合理调整方便猎人生存
 WarnDistance: 50
+HunterWarnDistance: 50
 
 #开局倒计时时长
 Countdown: 10
 
 #逃亡者警告消息(%wd是警告距离就是上面那个，%d是当前距离）
-WarnDistanceSafe: "%wdM 内未检测到猎人"
-WarnDistanceClose: "警告! 猎人正在靠近！当前距离：%dM"
+WarnDistanceSafe: "%sM 内未检测到猎人"
+WarnDistanceClose: "警告! 猎人正在靠近！当前距离：%sM"
+HunterWarnDistanceClose: "提示! 在%dM内躲藏着逃亡者！"
+
+#首次进入地狱提供抗火时长
+FireResistanceTime: 30
 
 #服务器名称（实际上也就结束统计的时候显示一下）
-ServerName: "MossMC"
+ServerName: "凌慕轻语"
 
 #游戏名称（实际上也同样就结束统计的时候显示一下）
 ServerGame: "猎人游戏"
@@ -110,8 +118,11 @@ DamageOutPut: "最佳输出"
 #统计展示的受到伤害最多的玩家
 DamageReceive: "最惨靶子"
 
-#统计展示的对队友输出最多的玩家
-TeamKiller: "队友杀手"
+#统计展示的对敌方输出最多的玩家
+TeamKiller: "超神选手"
+
+#统计展示的对敌方输出最多的玩家
+TeamEndDragon: "屠龙勇士"
 
 #统计展示的移动距离最多的玩家
 WalkMaster: "大旅行者"

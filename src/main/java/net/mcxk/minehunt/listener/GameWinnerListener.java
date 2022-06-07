@@ -3,6 +3,7 @@ package net.mcxk.minehunt.listener;
 import net.mcxk.minehunt.MineHunt;
 import net.mcxk.minehunt.game.GameStatus;
 import net.mcxk.minehunt.game.PlayerRole;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class GameWinnerListener implements Listener {
@@ -29,8 +31,10 @@ public class GameWinnerListener implements Listener {
             return;
         }
         Optional<PlayerRole> role = plugin.getGame().getPlayerRole(event.getEntity());
+        final Player killerPlayer = event.getEntity().getKiller();
         if (role.isPresent()) {
-            if (role.get() == PlayerRole.RUNNER) {
+            final PlayerRole playerRole = role.get();
+            if (playerRole == PlayerRole.RUNNER) {
                 String killer = event.getDeathMessage();
                 if (event.getEntity().getLastDamageCause() != null) {
                     killer = event.getEntity().getLastDamageCause().getEntity().getName();
@@ -48,6 +52,13 @@ public class GameWinnerListener implements Listener {
                     plugin.getGame().stop(PlayerRole.HUNTER, event.getEntity().getLocation().add(0, 3, 0));
                     event.getEntity().setHealth(20); //Prevent player dead
                 }
+                // 逃亡者首次击杀猎人
+            } else if (playerRole == PlayerRole.HUNTER
+                    && Objects.nonNull(killerPlayer)
+                    && Objects.isNull(plugin.getGame().getFirstKillPlayer())) {
+                // 记录逃亡者首次击杀猎人
+                plugin.getGame().setFirstKillPlayer(event.getEntity());
+                Bukkit.broadcastMessage(String.format("%s逃亡者%s首次击杀猎人%s！", ChatColor.YELLOW, killerPlayer.getName(), event.getEntity().getName()));
             }
         }
     }

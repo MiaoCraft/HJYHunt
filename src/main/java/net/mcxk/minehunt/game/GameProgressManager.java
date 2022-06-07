@@ -4,11 +4,13 @@ import net.mcxk.minehunt.MineHunt;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -18,22 +20,29 @@ public class GameProgressManager {
     private final MineHunt plugin = MineHunt.getInstance();
     private final Set<GameProgress> unlocked = new HashSet<>();
 
+    private final Integer fireResistanceTime = plugin.getConfig().getInt("FireResistanceTime");
+
+
+    public void unlockProgress(GameProgress progress) {
+        unlockProgress(progress, null);
+    }
+
     /**
      * 检查和解锁新的游戏进度
      *
      * @param progress 游戏进度
      */
-    public void unlockProgress(GameProgress progress) {
+    public void unlockProgress(GameProgress progress, Player player) {
         if (plugin.getGame().getStatus() != GameStatus.GAME_STARTED) {
             return;
         }
         if (!unlocked.add(progress)) {
             return;
         }
-        processProgress(progress);
+        processProgress(progress, player);
     }
 
-    private void processProgress(GameProgress progress) {
+    private void processProgress(GameProgress progress, Player thisPlayer) {
         switch (progress) {
             case NOT_STARTED:
             case GAME_STARTING:
@@ -42,16 +51,21 @@ public class GameProgressManager {
             case STONE_AGE:
             case IRON_MINED:
                 broadcastProgress(progress, true, true);
-                plugin.getGame().getInGamePlayers().forEach(player -> player.getInventory().addItem(new ItemStack(Material.IRON_ORE, 8)));
-                plugin.getGame().getInGamePlayers().forEach(player -> player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 600, 1)));
+                plugin.getGame().getInGamePlayers().forEach(player -> {
+                    player.getInventory().addItem(new ItemStack(Material.IRON_ORE, 8));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 600, 1));
+                });
                 break;
             case COMPASS_UNLOCKED:
                 broadcastProgress(progress, false, false);
                 break;
             case ENTER_NETHER:
                 broadcastProgress(progress, true, false);
-                plugin.getGame().getInGamePlayers().forEach(player -> player.getInventory().addItem(new ItemStack(Material.OBSIDIAN, 4)));
-                plugin.getGame().getInGamePlayers().forEach(player -> player.getInventory().addItem(new ItemStack(Material.FLINT, 1)));
+                plugin.getGame().getInGamePlayers().forEach(player -> {
+                    player.getInventory().addItem(new ItemStack(Material.OBSIDIAN, 4));
+                    player.getInventory().addItem(new ItemStack(Material.FLINT, 1));
+                });
+                thisPlayer.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, fireResistanceTime * 20, 1));
                 break;
             case GET_BLAZE_ROD:
                 broadcastProgress(progress, false, true);
@@ -63,10 +77,15 @@ public class GameProgressManager {
                 break;
             case ENTER_END:
                 broadcastProgress(progress, true, false);
-                plugin.getGame().getInGamePlayers().forEach(player -> player.getInventory().addItem(new ItemStack(Material.WATER_BUCKET, 1)));
+                plugin.getGame().getInGamePlayers().forEach(player -> {
+                    player.getInventory().addItem(new ItemStack(Material.WATER_BUCKET, 1));
+                    player.getInventory().addItem(new ItemStack(Material.ARROW, 20));
+                });
                 break;
             case KILLED_DRAGON:
                 broadcastProgress(progress, false, false);
+                break;
+            default:
                 break;
         }
     }

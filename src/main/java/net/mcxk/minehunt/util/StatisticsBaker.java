@@ -32,7 +32,7 @@ public class StatisticsBaker {
         if (result.getValue() == 0.0d) {
             return "";
         }
-        return result.getKey() + " 旅行了 " + result.getValue().intValue() + " 米";
+        return result.getKey() + " 旅行了 " + Math.round(result.getValue().intValue() / 10.0) + " 米";
     }
 
 
@@ -57,7 +57,23 @@ public class StatisticsBaker {
         if (maxPlayer == null) {
             return "";
         }
-        return maxPlayer.getName() + " 对队友造成了 " + maxDamage + " 点伤害";
+        return maxPlayer.getName() + " 对敌方造成了 " + maxDamage + " 点伤害";
+    }
+
+    public String getTeamEndDragonBadGuy() {
+        Player maxPlayer = null;
+        double maxDamage = 0.0d;
+        for (Map.Entry<Player, Double> playerDoubleEntry : MineHunt.getInstance().getGame().getTeamDamageEndDragonData().entrySet()) {
+            if (playerDoubleEntry.getValue() < maxDamage) {
+                continue;
+            }
+            maxPlayer = playerDoubleEntry.getKey();
+            maxDamage = playerDoubleEntry.getValue().intValue();
+        }
+        if (maxPlayer == null) {
+            return "";
+        }
+        return maxPlayer.getName() + " 对末影龙造成了 " + maxDamage + " 点伤害";
     }
 
 

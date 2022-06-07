@@ -12,6 +12,6 @@ public class GameEndingData {
     private String walkMaster;
     private String jumpMaster;
     private String teamKiller;
-
+    private String teamEndDragon;
 
 }
