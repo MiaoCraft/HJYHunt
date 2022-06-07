@@ -48,12 +48,12 @@ public final class MineHunt extends JavaPlugin {
         }
         Plugin pluginPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
         if (pluginPlaceholderApi != null) {
-            System.out.println("检测到PlaceHolderAPI插件，变量功能已启用！");
+            getLogger().info("检测到PlaceHolderAPI插件，变量功能已启用！");
             new Placeholder(this).register();
         }
         Plugin pluginAdvancedReplay = Bukkit.getPluginManager().getPlugin("AdvancedReplay");
         if (pluginAdvancedReplay != null) {
-            System.out.println("检测到AdvancedReplay插件，回放功能已启用！");
+            getLogger().info("检测到AdvancedReplay插件，回放功能已启用！");
         }
         game.switchWorldRuleForReady(false);
         Bukkit.getPluginManager().registerEvents(new PlayerServerListener(), this);
@@ -92,7 +92,7 @@ public final class MineHunt extends JavaPlugin {
             final InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(propertiesFile), Charsets.UTF_8);
             Properties server = new Properties();
             server.load(inputStreamReader);
-            System.out.println("读取到新的种子：" + seed);
+            getLogger().info("读取到新的种子：" + seed);
             server.setProperty("level-seed", seed);
             server.store(new OutputStreamWriter(new FileOutputStream(propertiesFile), StandardCharsets.UTF_8), "propeties,write:level-seed");
         } catch (IOException e) {
