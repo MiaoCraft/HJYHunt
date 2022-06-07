@@ -32,7 +32,7 @@ public class PlayerMoveWatcher {
                                 }
                                 if (!runnerTheEnd && environment == World.Environment.THE_END) {
                                     runnerTheEnd = true;
-                                    Bukkit.broadcastMessage("逃亡者已到达 末地 维度！");
+                                    Bukkit.broadcastMessage(String.format("%s逃亡者 %s 已到达 末地 维度！", ChatColor.YELLOW, player.getName()));
                                 }
                             }
                         }
