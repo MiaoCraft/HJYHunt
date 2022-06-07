@@ -351,7 +351,11 @@ public class Game {
                 e.printStackTrace();
             }
         }
-        new MusicPlayer().playEnding();
+        try {
+            new MusicPlayer().playEnding();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Bukkit.getOnlinePlayers().stream().filter(p -> !inGamePlayers.contains(p)).forEach(p -> p.sendTitle(ChatColor.RED + "游戏结束", "The End", 0, 2000, 0));
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             //开始结算阶段

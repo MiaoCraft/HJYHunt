@@ -74,7 +74,12 @@ public final class MineHunt extends JavaPlugin {
         final String serverPath = System.getProperty("user.dir");
         try {
             int seedNum = config.getInt("LevelSeedNum");
-            final BufferedReader seedReader = getTextSeed();
+            final File file = new File(serverPath + "/plugins/MineHunt/seeds.txt");
+            if (!file.exists()) {
+                return;
+            }
+            getLogger().info(file.getAbsolutePath());
+            final BufferedReader seedReader = new BufferedReader(new FileReader(file));
             String seed = "";
             for (int i = 0; i <= seedNum; i++) {
                 if (i == seedNum) {
@@ -87,8 +92,8 @@ public final class MineHunt extends JavaPlugin {
                 seed = "";
             }
             config.set("LevelSeedNum", seedNum + 1);
-            config.save(serverPath + "\\plugins\\MineHunt\\config.yml");
-            final File propertiesFile = new File(serverPath + "\\server.properties");
+            config.save(serverPath + "/plugins/MineHunt/config.yml");
+            final File propertiesFile = new File(serverPath + "/server.properties");
             final InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(propertiesFile), Charsets.UTF_8);
             Properties server = new Properties();
             server.load(inputStreamReader);
@@ -99,18 +104,5 @@ public final class MineHunt extends JavaPlugin {
             e.printStackTrace();
         }
     }
-
-    private BufferedReader getTextSeed() {
-        Reader reader = getTextResource("seeds.txt");
-        if (Objects.isNull(reader)) {
-            saveResource("seeds.txt", false);
-            reader = getTextResource("seeds.txt");
-            if (Objects.isNull(reader)) {
-                throw new RuntimeException("读取不到：" + "seeds.txt");
-            }
-        }
-        return new BufferedReader(reader);
-    }
-
 
 }
