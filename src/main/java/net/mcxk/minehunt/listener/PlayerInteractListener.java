@@ -53,18 +53,17 @@ public class PlayerInteractListener implements Listener {
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void teamDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) {
+            return;
+        }
+        if (event.getDamager() instanceof EnderDragon) {
+            teamDamageEndDragon(event.getFinalDamage(), (Player) event.getDamager());
+            return;
+        }
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
         Player player1 = (Player) event.getEntity();
-        //
-        if (event.getDamager() instanceof EnderDragon) {
-            teamDamageEndDragon(event.getFinalDamage(), player1);
-            return;
-        }
-        if (!(event.getDamager() instanceof Player)) {
-            return;
-        }
         // 只处理玩家对玩家的伤害
         Player player2 = (Player) event.getDamager();
         if (player1.getUniqueId().equals(player2.getUniqueId())) {
