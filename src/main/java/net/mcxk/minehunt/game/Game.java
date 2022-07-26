@@ -1,5 +1,6 @@
 package net.mcxk.minehunt.game;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,12 +30,12 @@ public class Game {
      * 团队内伤害数据
      */
     @Getter
-    private final Map<Player, Double> teamDamageData = new HashMap<>();
+    private final Map<Player, Double> teamDamageData = Maps.newConcurrentMap();
     /**
      * 逃亡者攻击末影龙伤害数据
      */
     @Getter
-    private final Map<Player, Double> teamDamageEndDragonData = new HashMap<>();
+    private final Map<Player, Double> teamDamageEndDragonData = Maps.newConcurrentMap();
 
     /**
      * 首次攻击到逃亡者玩家
@@ -73,7 +74,7 @@ public class Game {
     @Getter
     private final Set<Player> inGamePlayers = Sets.newCopyOnWriteArraySet();
     @Getter
-    private final Map<Player, Long> reconnectTimer = new HashMap<>();
+    private final Map<Player, Long> reconnectTimer = Maps.newConcurrentMap();
     /**
      * 进度管理器
      */
@@ -84,7 +85,7 @@ public class Game {
      */
     @Getter
     private final GameEndingData gameEndingData = new GameEndingData();
-    private final Map<World, Difficulty> difficultyMap = new HashMap<>();
+    private final Map<World, Difficulty> difficultyMap = Maps.newConcurrentMap();
     @Getter
     @Setter
     private GameStatus status = GameStatus.WAITING_PLAYERS;
@@ -93,19 +94,19 @@ public class Game {
      * 线程安全
      */
     @Getter
-    private Map<Player, PlayerRole> roleMapping = new HashMap<>();
+    private Map<Player, PlayerRole> roleMapping = Maps.newConcurrentMap();
     /**
      * 玩家意向角色
      * 线程安全
      */
     @Getter
-    private final Map<Player, PlayerRole> intentionRoleMapping = new ConcurrentHashMap<>();
+    private final Map<Player, PlayerRole> intentionRoleMapping = Maps.newConcurrentMap();
     /**
      * 玩家是否准备就绪
      * 线程安全
      */
     @Getter
-    private final Map<Player, Boolean> playerPrepare = new ConcurrentHashMap<>();
+    private final Map<Player, Boolean> playerPrepare = Maps.newConcurrentMap();
     /**
      * 是否游戏结束后先踢出所有玩家
      */
