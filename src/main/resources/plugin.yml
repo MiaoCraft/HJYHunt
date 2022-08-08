@@ -1,8 +1,10 @@
 name: HJYHunt
-version: 3.0
+version: 3.1
 main: net.mcxk.hjyhunt.HJYHunt
 api-version: 1.16
-soft-depend: [ NoteBlockAPI, AdvancedReplay, PlaceholderAPI ]
+# 未使用: NoteBlockAPI
+soft-depend: [ AdvancedReplay, PlaceholderAPI ]
+
 commands:
   minehunt:
     description: 猎人游戏指令
