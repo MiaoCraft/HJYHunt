@@ -381,11 +381,11 @@ public class Game {
         if (StringUtils.isNotBlank(gameEndingData.getStoneAgePassed())) {
             needShows++;
         }
-        /*
+
         if (StringUtils.isNotBlank(gameEndingData.getRunnerKiller())) {
             needShows++;
         }
-        */
+
         if (StringUtils.isNotBlank(gameEndingData.getWalkMaster())) {
             needShows++;
         }
@@ -403,12 +403,10 @@ public class Game {
             Thread.sleep(sleep);
         }
 
-        /*
         if (StringUtils.isNotBlank(gameEndingData.getRunnerKiller())) {
             Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.RED + plugin.getConfig().getString("RunnerKiller"), gameEndingData.getRunnerKiller(), 0, 20000, 0));
             Thread.sleep(sleep);
         }
-         */
 
         if (StringUtils.isNotBlank(gameEndingData.getDamageOutput())) {
             Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.AQUA + plugin.getConfig().getString("DamageOutPut"), gameEndingData.getDamageOutput(), 0, 20000, 0));

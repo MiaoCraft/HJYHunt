@@ -35,18 +35,9 @@ public class GameWinnerListener implements Listener {
         if (role.isPresent()) {
             final net.mcxk.hjyhunt.game.PlayerRole playerRole = role.get();
             if (playerRole == net.mcxk.hjyhunt.game.PlayerRole.RUNNER) {
-                String killer = event.getDeathMessage();
-                if (event.getEntity().getLastDamageCause() != null) {
-                    killer = event.getEntity().getLastDamageCause().getEntity().getName();
-                    if (event.getEntity().getLastDamageCause().getEntity() instanceof Projectile) {
-                        Projectile projectile = (Projectile) event.getEntity().getLastDamageCause().getEntity();
-                        if (projectile.getShooter() instanceof Player) {
-                            killer = ((Player) projectile.getShooter()).getName();
-                        }
-                    }
-                }
-                String finalKiller = killer;
-                // plugin.getGame().getGameEndingData().setRunnerKiller(finalKiller);
+                assert killerPlayer != null;
+                String finalKiller = killerPlayer.getName();
+                plugin.getGame().getGameEndingData().setRunnerKiller(finalKiller);
                 event.getEntity().setGameMode(GameMode.SPECTATOR);
                 if (plugin.getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().allMatch(p -> p.getGameMode() == GameMode.SPECTATOR)) {
                     plugin.getGame().stop(net.mcxk.hjyhunt.game.PlayerRole.HUNTER, event.getEntity().getLocation().add(0, 3, 0));
