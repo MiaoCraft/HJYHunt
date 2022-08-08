@@ -1,6 +1,6 @@
-name: MineHunt
-version: 2.2.1
-main: net.mcxk.minehunt.MineHunt
+name: HJYHunt
+version: 3.0
+main: net.mcxk.hjyhunt.HJYHunt
 api-version: 1.16
 soft-depend: [ NoteBlockAPI, AdvancedReplay, PlaceholderAPI ]
 commands:

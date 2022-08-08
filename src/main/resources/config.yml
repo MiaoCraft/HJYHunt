@@ -1,11 +1,5 @@
-# 本插件版本为MossCG瞎改改出来的
-# 原本是给MossMC群组单独修改的但是想了想就发布开源了
-# 欢迎来墨守的群里反馈bug：779291908
-# 一般会在2天内修复（除非我懒）
-# 下面是插件配置文件www~
-
 #指定种子（需要在当前配置目录放种子文件seeds.txt，每行一个种子）
-LevelSeed: true
+LevelSeed: false
 
 #下一个种子行数（0为第一行）
 LevelSeedNum: 0
@@ -51,7 +45,7 @@ L3Runner: 4
 SelectTeam: true
 
 #是否需要手动确认准备
-ConfirmPrepare: true
+ConfirmPrepare: false
 
 #最小准备就绪玩家数量（-1所有）
 MinPrepare: -1
@@ -77,8 +71,6 @@ YBasic: 5
 YRandom: 10
 
 #逃亡者警告距离
-#好气哦我看了半天发现原作者把distance写成了distanceSquared
-#也就是原本的是距离xyz的平方和，已修复为正常的距离（应该没问题了）
 #建议合理调整方便猎人生存
 WarnDistance: 50
 HunterWarnDistance: 50
@@ -95,7 +87,7 @@ HunterWarnDistanceClose: "提示! 在%dM内躲藏着逃亡者！"
 FireResistanceTime: 30
 
 #服务器名称（实际上也就结束统计的时候显示一下）
-ServerName: "凌慕轻语"
+ServerName: "HJYMC"
 
 #游戏名称（实际上也同样就结束统计的时候显示一下）
 ServerGame: "猎人游戏"
