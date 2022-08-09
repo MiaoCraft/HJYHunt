@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,8 @@ import java.util.Map;
  */
 public class CountDownWatcher {
     private static final int SHORTER = 5;
-    private final Map<net.mcxk.hjyhunt.game.PlayerRole, String> roleNameMap = new HashMap<>();
+
+    private final EnumMap<PlayerRole, String> roleNameMap = new EnumMap<>(net.mcxk.hjyhunt.game.PlayerRole.class);
     private final Map<Boolean, String> prepareMap = new HashMap<>();
     private final BukkitTask bukkitTask;
     private int remains = HJYHunt.getInstance().getGame().getCountdown();

@@ -100,7 +100,7 @@ public class MineHuntCommand implements CommandExecutor {
                     player.setGlowing(false);
                     break;
                 case net.mcxk.hjyhunt.game.ConstantCommand.FALSE:
-                    // 玩家取准备
+                    // 玩家取消准备
                     game.getPlayerPrepare().put(player, false);
                     player.sendMessage("已取消准备！");
                     player.setGlowing(true);
@@ -111,48 +111,6 @@ public class MineHuntCommand implements CommandExecutor {
             return true;
         }
 
-
-        if (!sender.hasPermission(net.mcxk.hjyhunt.game.ConstantCommand.MINE_HUNT_ADMIN)) {
-            return false;
-        }
-
-        // 不安全命令 完全没做检查，确认你会用再执行
-        // 墨守吐槽：挺安全的起码我没用出啥问题，有空我改改2333
-        if ((net.mcxk.hjyhunt.game.ConstantCommand.HUNTER.equalsIgnoreCase(args[0]) || net.mcxk.hjyhunt.game.ConstantCommand.RUNNER.equalsIgnoreCase(args[0]))) {
-            if (!(sender instanceof Player)) {
-                return false;
-            }
-            Player player = (Player) sender;
-            game.getInGamePlayers().add(player);
-            if (net.mcxk.hjyhunt.game.ConstantCommand.HUNTER.equalsIgnoreCase(args[0])) {
-                game.getRoleMapping().put(player, net.mcxk.hjyhunt.game.PlayerRole.HUNTER);
-            } else {
-                game.getRoleMapping().put(player, net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
-            }
-            player.setGameMode(GameMode.SURVIVAL);
-            Bukkit.broadcastMessage("玩家 " + sender.getName() + " 强制加入了游戏！ 身份：" + args[0]);
-            return true;
-        }
-        if (net.mcxk.hjyhunt.game.ConstantCommand.RESET_COUNTDOWN.equalsIgnoreCase(args[0]) && game.getStatus() == net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS) {
-            HJYHunt.getCountDownWatcher().resetCountdown();
-            return true;
-        }
-        if (net.mcxk.hjyhunt.game.ConstantCommand.PLAYERS.equalsIgnoreCase(args[0]) && game.getStatus() == net.mcxk.hjyhunt.game.GameStatus.GAME_STARTED) {
-            Bukkit.broadcastMessage(ChatColor.YELLOW + ">猎人AND逃亡者<");
-            Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + net.mcxk.hjyhunt.util.Util.list2String(net.mcxk.hjyhunt.HJYHunt.getInstance().getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
-            Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(net.mcxk.hjyhunt.HJYHunt.getInstance().getGame().getPlayersAsRole(PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
-            return true;
-        }
-        if (ConstantCommand.FORCE_START.equalsIgnoreCase(args[0]) && game.getStatus() == GameStatus.WAITING_PLAYERS) {
-            if (game.getInGamePlayers().size() < 2) {
-                sender.sendMessage("错误：至少有2名玩家才可以强制开始游戏 1名玩家你玩个锤子");
-                return true;
-            } else {
-                game.start();
-            }
-            return true;
-        }
-
-        return false;
+        return ForceCommand.forceCommand(sender,args,game);
     }
 }
