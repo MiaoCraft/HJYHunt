@@ -1,5 +1,5 @@
 name: HJYHunt
-version: 3.2
+version: 3.2#HotFix1
 main: net.mcxk.hjyhunt.HJYHunt
 api-version: 1.16
   # 未使用: NoteBlockAPI
