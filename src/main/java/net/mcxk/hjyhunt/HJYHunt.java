@@ -2,11 +2,10 @@ package net.mcxk.hjyhunt;
 
 import com.google.common.base.Charsets;
 import lombok.Getter;
-import net.mcxk.hjyhunt.commands.MineHuntCommand;
+import net.mcxk.hjyhunt.commands.HJYHuntCommand;
 import net.mcxk.hjyhunt.game.ConstantCommand;
 import net.mcxk.hjyhunt.game.Game;
 import net.mcxk.hjyhunt.listener.ChatListener;
-import net.mcxk.hjyhunt.placeholder.Placeholder;
 import net.mcxk.hjyhunt.watcher.CountDownWatcher;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -42,15 +41,21 @@ public final class HJYHunt extends JavaPlugin {
         instance = this;
         game = new Game();
         countDownWatcher = new CountDownWatcher();
-        final PluginCommand minehuntCommand = this.getCommand(ConstantCommand.MINE_HUNT);
-        if (Objects.nonNull(minehuntCommand)) {
-            minehuntCommand.setExecutor(new MineHuntCommand());
+        final PluginCommand HJYHuntCommand = this.getCommand(ConstantCommand.HJY_HUNT);
+        if (Objects.nonNull(HJYHuntCommand)) {
+            HJYHuntCommand.setExecutor(new HJYHuntCommand());
         }
         Plugin pluginPlaceholderApi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
+        /**
+         * Issue #1
+         */
+        /*
         if (pluginPlaceholderApi != null) {
             getLogger().info("检测到PlaceHolderAPI插件，变量功能已启用！");
+            // bug
             new Placeholder(this).register();
         }
+        */
         Plugin pluginAdvancedReplay = Bukkit.getPluginManager().getPlugin("AdvancedReplay");
         if (pluginAdvancedReplay != null) {
             getLogger().info("检测到AdvancedReplay插件，回放功能已启用！");
@@ -74,7 +79,7 @@ public final class HJYHunt extends JavaPlugin {
         final String serverPath = System.getProperty("user.dir");
         try {
             int seedNum = config.getInt("LevelSeedNum");
-            final File file = new File(serverPath + "/plugins/MineHunt/seeds.txt");
+            final File file = new File(serverPath + "/plugins/HJYHunt/seeds.txt");
             if (!file.exists()) {
                 return;
             }
@@ -92,7 +97,7 @@ public final class HJYHunt extends JavaPlugin {
                 seed = "";
             }
             config.set("LevelSeedNum", seedNum + 1);
-            config.save(serverPath + "/plugins/MineHunt/config.yml");
+            config.save(serverPath + "/plugins/HJYHunt/config.yml");
             final File propertiesFile = new File(serverPath + "/server.properties");
             final InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(propertiesFile), Charsets.UTF_8);
             Properties server = new Properties();
