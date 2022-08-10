@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class ForceCommand {
     public static boolean forceCommand(CommandSender sender, String[] args, Game game){
-        if (!sender.hasPermission(net.mcxk.hjyhunt.game.ConstantCommand.MINE_HUNT_ADMIN)) {
+        if (!sender.hasPermission(net.mcxk.hjyhunt.game.ConstantCommand.HJY_HUNT_ADMIN)) {
             return false;
         }
         // 不安全命令 完全没做检查，确认你会用再执行

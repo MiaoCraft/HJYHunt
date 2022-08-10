@@ -23,17 +23,17 @@ import java.util.Map;
 public class PlayerServerListener implements Listener {
     private static final BaseComponent[] SELECT_INTENTION_ROLE = new BaseComponent[]{
             net.mcxk.hjyhunt.util.Util.buildTextComponent("请选择您意向的角色：", false, ChatColor.YELLOW),
-            net.mcxk.hjyhunt.util.Util.buildTextComponent("逃亡者", true, ChatColor.RED, "/minehunt want runner"),
+            net.mcxk.hjyhunt.util.Util.buildTextComponent("逃亡者", true, ChatColor.RED, "/hjyhunt want runner"),
             net.mcxk.hjyhunt.util.Util.buildTextComponent(" - ", false, ChatColor.WHITE),
-            net.mcxk.hjyhunt.util.Util.buildTextComponent("猎人(默认)", true, ChatColor.GREEN, "/minehunt want hunter"),
+            net.mcxk.hjyhunt.util.Util.buildTextComponent("猎人(默认)", true, ChatColor.GREEN, "/hjyhunt want hunter"),
             net.mcxk.hjyhunt.util.Util.buildTextComponent(" - ", false, ChatColor.WHITE),
-            net.mcxk.hjyhunt.util.Util.buildTextComponent("观战", true, ChatColor.GRAY, "/minehunt want waiting"),
+            net.mcxk.hjyhunt.util.Util.buildTextComponent("观战", true, ChatColor.GRAY, "/hjyhunt want waiting"),
     };
     private static final BaseComponent[] CONFIRM_PREPARE = new BaseComponent[]{
             net.mcxk.hjyhunt.util.Util.buildTextComponent("请确认是否开始游戏：", false, ChatColor.YELLOW),
-            net.mcxk.hjyhunt.util.Util.buildTextComponent("等待(默认)", true, ChatColor.RED, "/minehunt prepare false"),
+            net.mcxk.hjyhunt.util.Util.buildTextComponent("等待(默认)", true, ChatColor.RED, "/hjyhunt prepare false"),
             net.mcxk.hjyhunt.util.Util.buildTextComponent(" - ", false, ChatColor.WHITE),
-            Util.buildTextComponent("准备", true, ChatColor.GREEN, "/minehunt prepare true"),
+            Util.buildTextComponent("准备", true, ChatColor.GREEN, "/hjyhunt prepare true"),
     };
     private final HJYHunt plugin = HJYHunt.getInstance();
 
