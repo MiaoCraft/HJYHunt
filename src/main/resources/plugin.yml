@@ -2,10 +2,10 @@ name: HJYHunt
 version: 3.2
 main: net.mcxk.hjyhunt.HJYHunt
 api-version: 1.16
-# 未使用: NoteBlockAPI
+  # 未使用: NoteBlockAPI
 soft-depend: [ AdvancedReplay, PlaceholderAPI ]
 
 commands:
   hjyhunt:
     description: 猎人游戏指令
-    usage: /<command> [copyright|hunter|runner|resetcountdown|players|forcestart|want|prepare]
+    usage: /<command> [about|hunter|runner|rstcd|players|start|want|prepare]
