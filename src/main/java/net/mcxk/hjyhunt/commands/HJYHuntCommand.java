@@ -1,27 +1,18 @@
 package net.mcxk.hjyhunt.commands;
 
 import net.mcxk.hjyhunt.HJYHunt;
-import net.mcxk.hjyhunt.game.ConstantCommand;
 import net.mcxk.hjyhunt.game.Game;
-import net.mcxk.hjyhunt.game.GameStatus;
-import net.mcxk.hjyhunt.game.PlayerRole;
-import net.mcxk.hjyhunt.util.Util;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.stream.Collectors;
-
 /**
- * @author LingMuQingYu
- * @since 2022/5/8 22:22
+ * @author LingMuQingYu, Crsuh2er0
+ * @since 2022/8/10 21:53
  */
-public class MineHuntCommand implements CommandExecutor {
+public class HJYHuntCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -31,18 +22,13 @@ public class MineHuntCommand implements CommandExecutor {
         final HJYHunt HJYHunt = net.mcxk.hjyhunt.HJYHunt.getInstance();
         final Game game = HJYHunt.getGame();
 
-        // 禁止删除本行版权声明
-        // 墨守吐槽：如果有人想在我这搞分支就顺着往下写就好了~
-        if (net.mcxk.hjyhunt.game.ConstantCommand.COPYRIGHT.equalsIgnoreCase(args[0])) {
-            sender.sendMessage("Copyright - Minecraft of gamerteam. 版权所有.");
-            sender.sendMessage("Fork by MossCG 这是墨守的分支版本~");
-            sender.sendMessage("Fork by LingMuQingYu 这是凌慕轻语的分支版本~");
-            sender.sendMessage("Fork by Crsuh2er0 这是泠辰的分支版本~");
+        if(AboutCommand.about(sender,args)){
             return true;
         }
         // 只有在游戏未开始时才会去处理是否准备
         if (net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS.equals(game.getStatus())
-                && net.mcxk.hjyhunt.game.ConstantCommand.WANT.equalsIgnoreCase(args[0]) && args.length == 2) {
+                && net.mcxk.hjyhunt.game.ConstantCommand.WANT.equalsIgnoreCase(args[0])
+                && args.length == 2) {
             if (!(sender instanceof Player)) {
                 return false;
             }
@@ -110,7 +96,6 @@ public class MineHuntCommand implements CommandExecutor {
             }
             return true;
         }
-
         return ForceCommand.forceCommand(sender,args,game);
     }
 }
