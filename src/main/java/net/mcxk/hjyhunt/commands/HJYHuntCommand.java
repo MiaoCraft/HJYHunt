@@ -22,7 +22,7 @@ public class HJYHuntCommand implements CommandExecutor {
         final HJYHunt HJYHunt = net.mcxk.hjyhunt.HJYHunt.getInstance();
         final Game game = HJYHunt.getGame();
 
-        if(AboutCommand.about(sender,args)){
+        if (AboutCommand.about(sender, args)) {
             return true;
         }
         // 只有在游戏未开始时才会去处理是否准备
@@ -96,6 +96,6 @@ public class HJYHuntCommand implements CommandExecutor {
             }
             return true;
         }
-        return ForceCommand.forceCommand(sender,args,game);
+        return ForceCommand.forceCommand(sender, args, game);
     }
 }

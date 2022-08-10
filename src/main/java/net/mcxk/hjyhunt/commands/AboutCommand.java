@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
  * @apiNote
  */
 public class AboutCommand {
-    public static boolean about(CommandSender sender, String[] args){
+    public static boolean about(CommandSender sender, String[] args) {
         // 禁止删除本行版权声明
         // 墨守吐槽：如果有人想在我这搞分支就顺着往下写就好了~
         if (net.mcxk.hjyhunt.game.ConstantCommand.ABOUT.equalsIgnoreCase(args[0])) {

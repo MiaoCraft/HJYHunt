@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @apiNote
  */
 public class ForceCommand {
-    public static boolean forceCommand(CommandSender sender, String[] args, Game game){
+    public static boolean forceCommand(CommandSender sender, String[] args, Game game) {
         if (!sender.hasPermission(net.mcxk.hjyhunt.game.ConstantCommand.HJY_HUNT_ADMIN)) {
             return false;
         }

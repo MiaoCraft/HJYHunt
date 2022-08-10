@@ -36,9 +36,10 @@ public class GameWinnerListener implements Listener {
             if (playerRole == net.mcxk.hjyhunt.game.PlayerRole.RUNNER) {
                 assert killerPlayer != null;
                 String finalKiller = null;
-                try{
+                try {
                     finalKiller = killerPlayer.getName();
-                } catch (Exception ignored){}
+                } catch (Exception ignored) {
+                }
 
                 plugin.getGame().getGameEndingData().setRunnerKiller(finalKiller);
                 event.getEntity().setGameMode(GameMode.SPECTATOR);
