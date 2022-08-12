@@ -7,10 +7,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.replay.GameRecord;
-import net.mcxk.hjyhunt.util.GameEndingData;
-import net.mcxk.hjyhunt.util.MusicPlayer;
-import net.mcxk.hjyhunt.util.StatisticsBaker;
-import net.mcxk.hjyhunt.util.Util;
+import net.mcxk.hjyhunt.util.*;
 import net.mcxk.hjyhunt.watcher.PlayerMoveWatcher;
 import net.mcxk.hjyhunt.watcher.RadarWatcher;
 import net.mcxk.hjyhunt.watcher.ReconnectWatcher;
@@ -41,8 +38,16 @@ public class Game {
      */
     @Getter
     private final Set<Player> inGamePlayers = Sets.newCopyOnWriteArraySet();
+    /**
+     * 玩家重连计时器
+     */
     @Getter
     private final Map<Player, Long> reconnectTimer = Maps.newConcurrentMap();
+    /**
+     * 玩家重连计数器
+     */
+    @Getter
+    private final Map<Player, Byte> reconnectCount = Maps.newConcurrentMap();
     /**
      * 进度管理器
      */
@@ -170,7 +175,17 @@ public class Game {
     }
 
     public boolean playerJoining(Player player) {
-        reconnectTimer.remove(player);
+        if(status != GameStatus.WAITING_PLAYERS && (Objects.equals(getPlayerRole(player), Optional.of(PlayerRole.RUNNER)) || Objects.equals(getPlayerRole(player), Optional.of(PlayerRole.HUNTER)))){
+            reconnectTimer.remove(player);
+            if(!reconnectCount.containsKey(player)){
+                reconnectCount.put(player, (byte) 1);
+            }
+            reconnectCount.put(player, (byte) (reconnectCount.get(player) + 1));
+            if(reconnectCount.get(player) > 3){
+                player.setHealth(0);
+                Bukkit.broadcastMessage(String.format("%s%s 因为重连次数过多已死亡！",ChatColor.RED,player.getName()));
+            }
+        }
         if (inGamePlayers.size() < maxPlayers) {
             inGamePlayers.add(player);
             return true;
@@ -183,6 +198,7 @@ public class Game {
             this.inGamePlayers.remove(player);
         } else {
             this.reconnectTimer.put(player, System.currentTimeMillis());
+
         }
     }
 
