@@ -16,7 +16,5 @@ public class ConstantCommand {
     public static final String PLAYERS = "players";
     public static final String FORCE_START = "start";
     public static final String WANT = "want";
-    public static final String PREPARE = "prepare";
-    public static final String TRUE = "true";
-    public static final String FALSE = "false";
+    public static final String HELP = "help";
 }
