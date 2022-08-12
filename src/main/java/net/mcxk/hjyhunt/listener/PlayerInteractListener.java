@@ -6,6 +6,7 @@ import net.mcxk.hjyhunt.game.PlayerRole;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -20,7 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * @author xiaolin
+ * @author xiaolin, Crsuh2er0
  */
 public class PlayerInteractListener implements Listener {
     private final HJYHunt plugin = HJYHunt.getInstance();
@@ -31,6 +33,14 @@ public class PlayerInteractListener implements Listener {
             event.setCancelled(true);
             event.setUseInteractedBlock(Event.Result.DENY);
             event.setUseItemInHand(Event.Result.DENY);
+        }
+    }
+
+    @EventHandler
+    public void pickUp(EntityPickupItemEvent e) {
+        EntityType eType = e.getEntityType();
+        if (eType == EntityType.PLAYER && HJYHunt.getInstance().getGame().getStatus() != GameStatus.GAME_STARTED) {
+            e.setCancelled(true);
         }
     }
 
