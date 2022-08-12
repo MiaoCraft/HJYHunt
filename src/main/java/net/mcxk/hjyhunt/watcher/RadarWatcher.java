@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,8 +33,8 @@ public class RadarWatcher {
                 if (plugin.getGame().getStatus() != GameStatus.GAME_STARTED) {
                     return;
                 }
-                List<Player> runners = plugin.getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
-                List<Player> hunters = plugin.getGame().getPlayersAsRole(PlayerRole.HUNTER);
+                List<Player> runners = GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
+                List<Player> hunters = GetPlayerAsRole.getPlayersAsRole(PlayerRole.HUNTER);
                 for (Player runner : runners) {
                     for (Player hunter : hunters) {
                         if (hunter.getWorld() != runner.getWorld() || runner.getGameMode() == GameMode.SPECTATOR) {

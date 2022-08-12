@@ -3,6 +3,7 @@ package net.mcxk.hjyhunt.listener;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +30,7 @@ public class ChatListener implements Listener {
         if (event.getMessage().startsWith("#")) {
             event.setCancelled(true);
             if (role.get() == net.mcxk.hjyhunt.game.PlayerRole.HUNTER) {
-                HJYHunt.getInstance().getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.sendMessage(ChatColor.GRAY + "[TEAM] " + event.getPlayer().getDisplayName() + ": " + ChatColor.RESET + event.getMessage()));
+                GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.sendMessage(ChatColor.GRAY + "[TEAM] " + event.getPlayer().getDisplayName() + ": " + ChatColor.RESET + event.getMessage()));
             }
         } else {
             if (role.get() == net.mcxk.hjyhunt.game.PlayerRole.HUNTER) {

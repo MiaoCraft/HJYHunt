@@ -7,7 +7,10 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.replay.GameRecord;
-import net.mcxk.hjyhunt.util.*;
+import net.mcxk.hjyhunt.util.EndKick;
+import net.mcxk.hjyhunt.util.GameEndingData;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
+import net.mcxk.hjyhunt.util.Util;
 import net.mcxk.hjyhunt.watcher.PlayerMoveWatcher;
 import net.mcxk.hjyhunt.watcher.RadarWatcher;
 import net.mcxk.hjyhunt.watcher.ReconnectWatcher;
@@ -106,6 +109,8 @@ public class Game {
     @Getter
     private final boolean friendsHurt = plugin.getConfig().getBoolean("FriendsHurt");
     private final boolean endWhenAllLeave = plugin.getConfig().getBoolean("endWhenAllLeave");
+    @Getter
+    private final boolean judgeWinnerWhenLeaveEnd = plugin.getConfig().getBoolean("judgeWinnerWhenLeaveEnd");
     Random random = new Random();
     /**
      * 首次攻击到逃亡者玩家
@@ -139,8 +144,6 @@ public class Game {
      * 线程安全
      */
     @Getter
-    private Map<Player, net.mcxk.hjyhunt.game.PlayerRole> roleMapping = Maps.newConcurrentMap();
-    @Getter
     private boolean compassUnlocked = plugin.getConfig().getBoolean("CompassUnlocked");
 
     public void switchCompass(boolean unlocked) {
@@ -149,14 +152,14 @@ public class Game {
         }
         this.compassUnlocked = unlocked;
         if (unlocked) {
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.getInventory().addItem(new ItemStack(Material.COMPASS, 1)));
+            GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.getInventory().addItem(new ItemStack(Material.COMPASS, 1)));
             Bukkit.broadcastMessage(ChatColor.YELLOW + "猎人已解锁追踪指南针！逃亡者的位置已经暴露！");
         } else {
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.getInventory().remove(Material.COMPASS));
+            GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.getInventory().remove(Material.COMPASS));
             Bukkit.broadcastMessage(ChatColor.YELLOW + "猎人的追踪指南针被破坏失效，需要重新解锁！");
         }
         // 清除合成的指南针
-        getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(p -> p.getInventory().remove(Material.COMPASS));
+        GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(p -> p.getInventory().remove(Material.COMPASS));
     }
 
     /**
@@ -169,22 +172,22 @@ public class Game {
         if (status == net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS) {
             return Optional.of(net.mcxk.hjyhunt.game.PlayerRole.WAITING);
         }
-        if (!this.roleMapping.containsKey(player)) {
+        if (!GetPlayerAsRole.getRoleMapping().containsKey(player)) {
             return Optional.empty();
         }
-        return Optional.of(this.roleMapping.get(player));
+        return Optional.of(GetPlayerAsRole.getRoleMapping().get(player));
     }
 
     public boolean playerJoining(Player player) {
-        if(status != GameStatus.WAITING_PLAYERS && (Objects.equals(getPlayerRole(player), Optional.of(PlayerRole.RUNNER)) || Objects.equals(getPlayerRole(player), Optional.of(PlayerRole.HUNTER)))){
+        if (status != GameStatus.WAITING_PLAYERS && (Objects.equals(getPlayerRole(player), Optional.of(PlayerRole.RUNNER)) || Objects.equals(getPlayerRole(player), Optional.of(PlayerRole.HUNTER)))) {
             reconnectTimer.remove(player);
-            if(!reconnectCount.containsKey(player)){
+            if (!reconnectCount.containsKey(player)) {
                 reconnectCount.put(player, (byte) 1);
             }
             reconnectCount.put(player, (byte) (reconnectCount.get(player) + 1));
-            if(reconnectCount.get(player) > 3){
+            if (reconnectCount.get(player) > 3) {
                 player.setHealth(0);
-                Bukkit.broadcastMessage(String.format("%s%s 因为重连次数过多已死亡！",ChatColor.RED,player.getName()));
+                Bukkit.broadcastMessage(String.format("%s%s 因为重连次数过多已死亡！", ChatColor.RED, player.getName()));
             }
         }
         if (inGamePlayers.size() < maxPlayers) {
@@ -198,14 +201,12 @@ public class Game {
         if (status == net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS) {
             this.inGamePlayers.remove(player);
         } else {
-            if(endWhenAllLeave){
-                if (getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty() || getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
-                    Bukkit.broadcastMessage("由于比赛的一方所有人全部掉线，游戏被迫终止。");
-                    Bukkit.broadcastMessage("服务器将会在 10 秒钟后重新启动。");
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        kickAllPlayer();
-                        Bukkit.shutdown();
-                    }, 20);
+            if (endWhenAllLeave) {
+                if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty()) {
+                    LeaveEnding.leaveEnd(PlayerRole.HUNTER);
+                }
+                if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
+                    LeaveEnding.leaveEnd(PlayerRole.RUNNER);
                 }
             } else {
                 this.reconnectTimer.put(player, System.currentTimeMillis());
@@ -214,21 +215,18 @@ public class Game {
     }
 
     public void playerLeft(Player player) {
-        this.roleMapping.remove(player);
+        GetPlayerAsRole.getRoleMapping().remove(player);
         this.inGamePlayers.remove(player);
 
-        if (getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty() || getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
-            Bukkit.broadcastMessage("由于比赛的一方所有人长时间未能重新连接，游戏被迫终止。");
-            Bukkit.broadcastMessage("服务器将会在 10 秒钟后重新启动。");
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                kickAllPlayer();
-                Bukkit.shutdown();
-            }, 20);
-            return;
+        if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty()) {
+            LeaveEnding.leaveEnd(PlayerRole.HUNTER);
+        } else if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
+            LeaveEnding.leaveEnd(PlayerRole.RUNNER);
+        } else {
+            Bukkit.broadcastMessage("玩家：" + player.getName() + " 因长时间未能重新连接回对战而被从列表中剔除");
+            Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
+            Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
         }
-        Bukkit.broadcastMessage("玩家：" + player.getName() + " 因长时间未能重新连接回对战而被从列表中剔除");
-        Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
-        Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
     }
 
     public void start() {
@@ -247,7 +245,7 @@ public class Game {
         Bukkit.broadcastMessage("请稍后，系统正在随机分配玩家身份...");
 
         List<Player> noRolesPlayers = new ArrayList<>(inGamePlayers);
-        Map<Player, net.mcxk.hjyhunt.game.PlayerRole> roleMapTemp = new HashMap<>(16);
+        Map<Player, PlayerRole> roleMapTemp = new HashMap<>(16);
 
         int runners = 1;
         if (inGamePlayers.size() >= L0Player) {
@@ -266,28 +264,30 @@ public class Game {
         if (selectTeam) {
             intentionRunners = intentionRoleMapping.entrySet()
                     .stream()
-                    .filter(e -> net.mcxk.hjyhunt.game.PlayerRole.RUNNER.equals(e.getValue()))
+                    .filter(e -> PlayerRole.RUNNER.equals(e.getValue()))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         }
         while (roleMapTemp.size() < runners) {
             if (selectTeam && !intentionRunners.isEmpty()) {
                 Player selected = intentionRunners.get(random.nextInt(intentionRunners.size()));
-                roleMapTemp.put(selected, net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
+                roleMapTemp.put(selected, PlayerRole.RUNNER);
                 noRolesPlayers.remove(selected);
                 intentionRunners.remove(selected);
             } else {
                 Player selected = noRolesPlayers.get(random.nextInt(noRolesPlayers.size()));
-                roleMapTemp.put(selected, net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
+                roleMapTemp.put(selected, PlayerRole.RUNNER);
                 noRolesPlayers.remove(selected);
             }
         }
-        noRolesPlayers.forEach(p -> roleMapTemp.put(p, net.mcxk.hjyhunt.game.PlayerRole.HUNTER));
-        this.roleMapping = new ConcurrentHashMap<>(roleMapTemp);
+        noRolesPlayers.forEach(p -> roleMapTemp.put(p, PlayerRole.HUNTER));
+        GetPlayerAsRole.setRoleMapping(new ConcurrentHashMap<>(roleMapTemp));
         Bukkit.broadcastMessage("正在将逃亡者随机传送到远离猎人的位置...");
-        Location airDropLoc = airDrop(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).get(0).getWorld().getSpawnLocation());
-        getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(runner -> runner.teleport(airDropLoc));
-        getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.teleport(p.getWorld().getSpawnLocation()));
+        // 先给第一个runner找个位置 bug
+        Location airDropLoc = airDrop(GetPlayerAsRole.getPlayersAsRole(PlayerRole.RUNNER).get(0).getWorld().getSpawnLocation());
+        // 再把其他runner传送过去
+        GetPlayerAsRole.getPlayersAsRole(PlayerRole.RUNNER).forEach(runner -> runner.teleport(airDropLoc));
+        GetPlayerAsRole.getPlayersAsRole(PlayerRole.HUNTER).forEach(p -> p.teleport(p.getWorld().getSpawnLocation()));
         Bukkit.broadcastMessage("设置游戏规则...");
         inGamePlayers.forEach(p -> {
             p.setGameMode(GameMode.SURVIVAL);
@@ -298,7 +298,7 @@ public class Game {
             p.getInventory().clear();
         });
         if (compassUnlocked) {
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(p -> p.getInventory().addItem(new ItemStack(Material.COMPASS, 1)));
+            GetPlayerAsRole.getPlayersAsRole(PlayerRole.HUNTER).forEach(p -> p.getInventory().addItem(new ItemStack(Material.COMPASS, 1)));
         }
         switchWorldRuleForReady(true);
         Bukkit.broadcastMessage("游戏开始！");
@@ -309,8 +309,8 @@ public class Game {
         Bukkit.broadcastMessage(ChatColor.AQUA + "在游戏过程中，当你解锁特定的游戏阶段时，全体玩家将会获得阶段奖励，可能是特定物品也可能是增益效果。");
         Bukkit.broadcastMessage(ChatColor.AQUA + "猎人可以通过合成指南针来定位逃亡者的方向；逃亡者可以通过合成指南针摧毁猎人的指南针。");
         Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "祝君好运，末地见！");
-        Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
-        Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
+        Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
+        Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
         this.registerWatchers();
         plugin.getGame().getProgressManager().unlockProgress(GameProgress.GAME_STARTING, null);
     }
@@ -336,58 +336,8 @@ public class Game {
         }
     }
 
-    public void stop(net.mcxk.hjyhunt.game.PlayerRole winner, Location location) {
-        this.inGamePlayers.stream().filter(Player::isOnline).forEach(player -> {
-            player.setGameMode(GameMode.SPECTATOR);
-            player.teleport(location.clone().add(0, 3, 0));
-            player.teleport(Util.lookAt(player.getEyeLocation(), location));
-        });
-        this.status = GameStatus.ENDED;
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "游戏结束! 服务器将在30秒后重新启动！");
-        String runnerNames = Util.list2String(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList()));
-        String hunterNames = Util.list2String(getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList()));
-
-        if (winner == net.mcxk.hjyhunt.game.PlayerRole.HUNTER) {
-            Bukkit.broadcastMessage(ChatColor.GOLD + "胜利者：猎人");
-            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "恭喜：" + hunterNames);
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(player -> player.sendTitle(ChatColor.GOLD + "胜利", "成功击败了逃亡者", 0, 2000, 0));
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(player -> player.sendTitle(ChatColor.RED + "游戏结束", "不幸阵亡", 0, 2000, 0));
-        } else {
-            Bukkit.broadcastMessage(ChatColor.GOLD + "胜利者：逃亡者");
-            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "恭喜：" + runnerNames);
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(player -> player.sendTitle(ChatColor.GOLD + "胜利", "成功战胜了末影龙", 0, 2000, 0));
-            getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(player -> player.sendTitle(ChatColor.RED + "游戏结束", "未能阻止末影龙死亡", 0, 2000, 0));
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("AdvancedReplay")) {
-            try {
-                GameRecord.stop(this);
-                Bukkit.broadcastMessage("游戏录制已保存：" + GameRecord.ROUND_UNIQUE_ID);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            new MusicPlayer().playEnding();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Bukkit.getOnlinePlayers().stream().filter(p -> !inGamePlayers.contains(p)).forEach(p -> p.sendTitle(ChatColor.RED + "游戏结束", "The End", 0, 2000, 0));
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            //开始结算阶段
-            StatisticsBaker baker = new StatisticsBaker();
-            //计算输出最多的玩家
-            getGameEndingData().setDamageOutput(baker.getDamageMaster());
-            getGameEndingData().setDamageReceive(baker.getDamageTakenMaster());
-            getGameEndingData().setWalkMaster(baker.getWalkingMaster());
-            getGameEndingData().setJumpMaster(baker.getJumpMaster());
-            getGameEndingData().setTeamKiller(baker.getTeamBadGuy());
-            getGameEndingData().setTeamEndDragon(baker.getTeamEndDragonBadGuy());
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this::sendEndingAnimation, 20 * 10);
-        }, (long) 20 * 10);
-    }
-
     @SneakyThrows
-    private void sendEndingAnimation() {
+    void sendEndingAnimation() {
         double maxCanCost = 20000d;
         int needShows = 0;
         if (StringUtils.isNotBlank(gameEndingData.getDamageOutput())) {
@@ -460,33 +410,18 @@ public class Game {
         Thread.sleep(sleep);
         Bukkit.getOnlinePlayers().forEach(Player::resetTitle);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            kickAllPlayer();
+            EndKick.kickAllPlayer();
             if (AutoRestart) {
                 Bukkit.shutdown();
             }
         }, 20);
     }
 
-    private void kickAllPlayer() {
-        if (!autoKick) {
-            return;
-        }
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            if (player.isEmpty() && player.isOnline()) {
-                // 主动踢出玩家
-                player.kickPlayer("游戏结束，后台正在重置地图，预计需要30秒！");
-            }
-        });
-    }
 
     private void registerWatchers() {
         new RadarWatcher();
         new ReconnectWatcher();
         new PlayerMoveWatcher();
-    }
-
-    public List<Player> getPlayersAsRole(PlayerRole role) {
-        return this.roleMapping.entrySet().stream().filter(playerPlayerRoleEntry -> playerPlayerRoleEntry.getValue() == role).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
     /**

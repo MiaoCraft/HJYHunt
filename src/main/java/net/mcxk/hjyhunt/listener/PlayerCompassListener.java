@@ -3,6 +3,7 @@ package net.mcxk.hjyhunt.listener;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -132,12 +133,12 @@ public class PlayerCompassListener implements Listener {
             event.getPlayer().setCompassTarget(event.getPlayer().getWorld().getSpawnLocation());
             event.getPlayer().sendMessage("你的队伍还没有解锁指南针，请先合成一个来解锁。");
         }
-        List<Player> runners = plugin.getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
+        List<Player> runners = GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
         if (runners.isEmpty()) {
             event.getPlayer().sendMessage("追踪失败，所有逃亡者均已离线等待重连中...");
         }
         Player closestRunner = null;
-        for (Player runner : plugin.getGame().getPlayersAsRole(PlayerRole.RUNNER)) {
+        for (Player runner : GetPlayerAsRole.getPlayersAsRole(PlayerRole.RUNNER)) {
             if (runner.getWorld() != event.getPlayer().getWorld() ||
                     runner.getGameMode() == GameMode.SPECTATOR ||
                     closestRunner == null) {

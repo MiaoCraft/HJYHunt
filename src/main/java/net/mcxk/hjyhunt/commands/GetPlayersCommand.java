@@ -3,6 +3,7 @@ package net.mcxk.hjyhunt.commands;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.Game;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.mcxk.hjyhunt.util.SendMessage;
 import net.mcxk.hjyhunt.util.Util;
 import org.bukkit.Bukkit;
@@ -27,8 +28,8 @@ public class GetPlayersCommand {
             return true;
         }
         Bukkit.broadcastMessage(HJYHunt.messageHead + ChatColor.YELLOW + ">猎人AND逃亡者<");
-        Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + net.mcxk.hjyhunt.util.Util.list2String(net.mcxk.hjyhunt.HJYHunt.getInstance().getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
-        Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(net.mcxk.hjyhunt.HJYHunt.getInstance().getGame().getPlayersAsRole(PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
+        Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList()));
+        Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
         return true;
     }
 

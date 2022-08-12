@@ -3,6 +3,7 @@ package net.mcxk.hjyhunt.listener;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -54,11 +55,11 @@ public class PlayerServerListener implements Listener {
                 plugin.getGame().getInGamePlayers().removeIf(p -> p.getUniqueId().equals(player.getUniqueId()));
                 plugin.getGame().getInGamePlayers().add(player);
 
-                for (Map.Entry<Player, net.mcxk.hjyhunt.game.PlayerRole> playerPlayerRoleEntry : plugin.getGame().getRoleMapping().entrySet()) {
+                for (Map.Entry<Player, net.mcxk.hjyhunt.game.PlayerRole> playerPlayerRoleEntry : GetPlayerAsRole.getRoleMapping().entrySet()) {
                     if (playerPlayerRoleEntry.getKey().getUniqueId().equals(player.getUniqueId())) {
                         PlayerRole role = playerPlayerRoleEntry.getValue();
-                        plugin.getGame().getRoleMapping().remove(playerPlayerRoleEntry.getKey());
-                        plugin.getGame().getRoleMapping().put(player, role);
+                        GetPlayerAsRole.getRoleMapping().remove(playerPlayerRoleEntry.getKey());
+                        GetPlayerAsRole.getRoleMapping().put(player, role);
                         break;
                     }
                 }

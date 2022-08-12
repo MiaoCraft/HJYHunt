@@ -2,7 +2,9 @@ package net.mcxk.hjyhunt.listener;
 
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
+import net.mcxk.hjyhunt.game.GameStop;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -26,14 +28,14 @@ public class GameWinnerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void playerDeath(PlayerDeathEvent event) {
-        if (plugin.getGame().getStatus() != net.mcxk.hjyhunt.game.GameStatus.GAME_STARTED) {
+        if (plugin.getGame().getStatus() != GameStatus.GAME_STARTED) {
             return;
         }
-        Optional<net.mcxk.hjyhunt.game.PlayerRole> role = plugin.getGame().getPlayerRole(event.getEntity());
+        Optional<PlayerRole> role = plugin.getGame().getPlayerRole(event.getEntity());
         final Player killerPlayer = event.getEntity().getKiller();
         if (role.isPresent()) {
-            final net.mcxk.hjyhunt.game.PlayerRole playerRole = role.get();
-            if (playerRole == net.mcxk.hjyhunt.game.PlayerRole.RUNNER) {
+            final PlayerRole playerRole = role.get();
+            if (playerRole == PlayerRole.RUNNER) {
                 assert killerPlayer != null;
                 try {
                     String finalKiller = killerPlayer.getName();
@@ -42,8 +44,8 @@ public class GameWinnerListener implements Listener {
                     plugin.getGame().getGameEndingData().setRunnerKiller(null);
                 }
                 event.getEntity().setGameMode(GameMode.SPECTATOR);
-                if (plugin.getGame().getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().allMatch(p -> p.getGameMode() == GameMode.SPECTATOR)) {
-                    plugin.getGame().stop(net.mcxk.hjyhunt.game.PlayerRole.HUNTER, event.getEntity().getLocation().add(0, 3, 0));
+                if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().allMatch(p -> p.getGameMode() == GameMode.SPECTATOR)) {
+                    GameStop.stop(net.mcxk.hjyhunt.game.PlayerRole.HUNTER, event.getEntity().getLocation().add(0, 3, 0));
                     // 避免玩家死亡
                     event.getEntity().setHealth(20);
                 }
@@ -100,6 +102,6 @@ public class GameWinnerListener implements Listener {
             return;
         }
         plugin.getGame().getGameEndingData().setDragonKiller(dragonKiller);
-        plugin.getGame().stop(PlayerRole.RUNNER, new Location(event.getEntity().getLocation().getWorld(), 0, 85, 0));
+        GameStop.stop(PlayerRole.RUNNER, new Location(event.getEntity().getLocation().getWorld(), 0, 85, 0));
     }
 }

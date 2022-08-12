@@ -7,6 +7,9 @@ LevelSeedNum: 0
 #是否在一个队伍的玩家全部掉线时直接结束游戏
 endWhenAllLeave: true
 
+#是否在一个队伍的玩家全部掉线后判断胜者
+judgeWinnerWhenLeaveEnd: true
+
 #玩家断开连接后的可重连时间（秒）
 reJoinTime: 180
 

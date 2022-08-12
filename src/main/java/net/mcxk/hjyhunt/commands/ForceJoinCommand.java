@@ -2,6 +2,7 @@ package net.mcxk.hjyhunt.commands;
 
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.Game;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.mcxk.hjyhunt.util.SendMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,9 +27,9 @@ public class ForceJoinCommand {
         Player player = (Player) sender;
         game.getInGamePlayers().add(player);
         if (net.mcxk.hjyhunt.game.ConstantCommand.HUNTER.equalsIgnoreCase(type)) {
-            game.getRoleMapping().put(player, net.mcxk.hjyhunt.game.PlayerRole.HUNTER);
+            GetPlayerAsRole.getRoleMapping().put(player, net.mcxk.hjyhunt.game.PlayerRole.HUNTER);
         } else {
-            game.getRoleMapping().put(player, net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
+            GetPlayerAsRole.getRoleMapping().put(player, net.mcxk.hjyhunt.game.PlayerRole.RUNNER);
         }
         player.setGameMode(GameMode.SURVIVAL);
         Bukkit.broadcastMessage(HJYHunt.messageHead + "玩家 " + sender.getName() + " 强制加入了游戏！ 身份：" + type);

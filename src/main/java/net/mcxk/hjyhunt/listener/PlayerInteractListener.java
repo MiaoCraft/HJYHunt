@@ -3,6 +3,7 @@ package net.mcxk.hjyhunt.listener;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
 import net.mcxk.hjyhunt.game.PlayerRole;
+import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EnderDragon;
@@ -108,7 +109,7 @@ public class PlayerInteractListener implements Listener {
      * @param player      玩家
      */
     private void teamDamageEndDragon(double finalDamage, Player player) {
-        final net.mcxk.hjyhunt.game.PlayerRole role = plugin.getGame().getRoleMapping().get(player);
+        final PlayerRole role = GetPlayerAsRole.getRoleMapping().get(player);
         if (Objects.isNull(role) || role != PlayerRole.RUNNER) {
             return;
         }

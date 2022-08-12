@@ -18,7 +18,7 @@ public class HelpCommand {
         sender.sendMessage(String.format("/hjyhunt about %s查看插件信息", ChatColor.GREEN));
         sender.sendMessage(String.format("/hjyhunt want <runner/helper/waiting> %s选择角色", ChatColor.GREEN));
         sender.sendMessage(String.format("/hjyhunt players %s查看玩家列表", ChatColor.GREEN));
-        sender.sendMessage(String.format("/hjyhuny help %s查看此列表", ChatColor.GREEN));
+        sender.sendMessage(String.format("/hjyhunt help %s查看此列表", ChatColor.GREEN));
         sender.sendMessage(String.format("/hjyhunt <runner/hunter> %s以选定身份强制加入游戏", ChatColor.GREEN));
         sender.sendMessage(String.format("/hjyhunt rstcd %s重置倒计时", ChatColor.GREEN));
         sender.sendMessage(String.format("/hjyhunt start %s强制开始游戏", ChatColor.GREEN));
