@@ -95,13 +95,6 @@
             <systemPath>${project.basedir}/libs/Replay.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>Jumper251</groupId>
-            <artifactId>PlaceholderAPI</artifactId>
-            <version>LOCAL</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/PlaceholderAPI.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.sonatype.sisu</groupId>
             <artifactId>sisu-inject-bean</artifactId>
             <version>2.6.0</version>
