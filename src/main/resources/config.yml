@@ -4,6 +4,9 @@ LevelSeed: false
 #下一个种子行数（0为第一行）
 LevelSeedNum: 0
 
+#是否在一个队伍的玩家全部掉线时直接结束游戏
+endWhenAllLeave: true
+
 #玩家断开连接后的可重连时间（秒）
 reJoinTime: 180
 

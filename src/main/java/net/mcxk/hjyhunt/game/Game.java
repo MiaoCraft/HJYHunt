@@ -105,6 +105,7 @@ public class Game {
     private final boolean AutoRestart = plugin.getConfig().getBoolean("AutoRestart");
     @Getter
     private final boolean friendsHurt = plugin.getConfig().getBoolean("FriendsHurt");
+    private final boolean endWhenAllLeave = plugin.getConfig().getBoolean("endWhenAllLeave");
     Random random = new Random();
     /**
      * 首次攻击到逃亡者玩家
@@ -197,8 +198,18 @@ public class Game {
         if (status == net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS) {
             this.inGamePlayers.remove(player);
         } else {
-            this.reconnectTimer.put(player, System.currentTimeMillis());
-
+            if(endWhenAllLeave){
+                if (getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty() || getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
+                    Bukkit.broadcastMessage("由于比赛的一方所有人全部掉线，游戏被迫终止。");
+                    Bukkit.broadcastMessage("服务器将会在 10 秒钟后重新启动。");
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        kickAllPlayer();
+                        Bukkit.shutdown();
+                    }, 20);
+                }
+            } else {
+                this.reconnectTimer.put(player, System.currentTimeMillis());
+            }
         }
     }
 
@@ -207,7 +218,7 @@ public class Game {
         this.inGamePlayers.remove(player);
 
         if (getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty() || getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
-            Bukkit.broadcastMessage("由于比赛的一方所有人因为长时间未能重新连接而被从列表中剔除，游戏被迫终止。");
+            Bukkit.broadcastMessage("由于比赛的一方所有人长时间未能重新连接，游戏被迫终止。");
             Bukkit.broadcastMessage("服务器将会在 10 秒钟后重新启动。");
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 kickAllPlayer();
