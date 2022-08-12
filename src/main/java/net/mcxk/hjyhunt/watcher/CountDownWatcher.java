@@ -10,8 +10,6 @@ import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author xiaolin
@@ -20,7 +18,6 @@ public class CountDownWatcher {
     private static final int SHORTER = 5;
 
     private final EnumMap<PlayerRole, String> roleNameMap = new EnumMap<>(net.mcxk.hjyhunt.game.PlayerRole.class);
-    private final Map<Boolean, String> prepareMap = new HashMap<>();
     private final BukkitTask bukkitTask;
     private int remains = HJYHunt.getInstance().getGame().getCountdown();
 
@@ -28,8 +25,6 @@ public class CountDownWatcher {
         roleNameMap.put(net.mcxk.hjyhunt.game.PlayerRole.HUNTER, ChatColor.GREEN + "猎人");
         roleNameMap.put(net.mcxk.hjyhunt.game.PlayerRole.RUNNER, ChatColor.RED + "逃亡者");
         roleNameMap.put(net.mcxk.hjyhunt.game.PlayerRole.WAITING, ChatColor.GRAY + "旁观");
-        prepareMap.put(false, ChatColor.RED + "未准备");
-        prepareMap.put(true, ChatColor.GREEN + "准备就绪");
         bukkitTask = Bukkit.getScheduler().runTaskTimer(HJYHunt.getInstance(), new CountDownWatcherRunnable(), 0, 20);
     }
 
@@ -48,37 +43,14 @@ public class CountDownWatcher {
 
             if (game.getInGamePlayers().size() < game.getMinPlayers()) {
                 String title;
-                if (game.isConfirmPrepare()) {
-                    title = ChatColor.AQUA + "" + game.getPlayerPrepare().values().stream().filter(r -> r).count() + " " + ChatColor.WHITE + "/ " + ChatColor.AQUA + game.getInGamePlayers().size();
-                } else {
-                    title = ChatColor.AQUA + "" + game.getInGamePlayers().size() + " " + ChatColor.WHITE + "/ " + ChatColor.AQUA + game.getMinPlayers();
-                }
+                title = ChatColor.AQUA + "" + game.getInGamePlayers().size() + " " + ChatColor.WHITE + "/ " + ChatColor.AQUA + game.getMinPlayers();
                 Bukkit.getOnlinePlayers().forEach(p -> {
                     final net.mcxk.hjyhunt.game.PlayerRole playerRole = game.getIntentionRoleMapping().get(p);
                     if (net.mcxk.hjyhunt.game.PlayerRole.WAITING.equals(playerRole)) {
-                        p.sendTitle(title, String.format("正在等待更多玩家加入游戏....[%s旁观]", ChatColor.WHITE), 0, 40, 0);
+                        p.sendTitle(title, String.format("正在等待更多玩家加入游戏....[%s旁观%s]", ChatColor.GRAY, ChatColor.WHITE), 0, 40, 0);
                     } else {
-                        String subtitle = String.format("正在等待更多玩家加入游戏....[%s%s][%s%s]",
-                                prepareMap.get(game.getPlayerPrepare().get(p)),
-                                ChatColor.WHITE,
+                        String subtitle = String.format("正在等待更多玩家加入游戏....[%s%s]",
                                 roleNameMap.get(game.getIntentionRoleMapping().get(p)),
-                                ChatColor.WHITE);
-                        p.sendTitle(title, subtitle, 0, 40, 0);
-                    }
-                });
-                remains = HJYHunt.getInstance().getGame().getCountdown();
-            } else if (game.isConfirmPrepare() && !game.getPlayerPrepare().values().stream().allMatch(r -> r)) {
-                String title = ChatColor.AQUA + "" + game.getPlayerPrepare().values().stream().filter(r -> r).count() + " " + ChatColor.WHITE + "/ " + ChatColor.AQUA + game.getInGamePlayers().size();
-                Bukkit.getOnlinePlayers().forEach(p -> {
-                    final net.mcxk.hjyhunt.game.PlayerRole playerRole = game.getIntentionRoleMapping().get(p);
-                    if (PlayerRole.WAITING.equals(playerRole)) {
-                        p.sendTitle(title, String.format("正在等待玩家准备就绪....[%s旁观]", ChatColor.WHITE), 0, 40, 0);
-                    } else {
-                        final Boolean prepare = game.getPlayerPrepare().get(p);
-                        String subtitle = String.format(Boolean.TRUE.equals(prepare) ? "正在等待玩家准备就绪....[%s%s][%s%s]" : "请确认准备....[%s%s][%s%s]",
-                                prepareMap.get(prepare),
-                                ChatColor.WHITE,
-                                roleNameMap.get(playerRole),
                                 ChatColor.WHITE);
                         p.sendTitle(title, subtitle, 0, 40, 0);
                     }

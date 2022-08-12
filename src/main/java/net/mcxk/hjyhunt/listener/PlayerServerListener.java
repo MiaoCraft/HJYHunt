@@ -3,7 +3,6 @@ package net.mcxk.hjyhunt.listener;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.game.GameStatus;
 import net.mcxk.hjyhunt.game.PlayerRole;
-import net.mcxk.hjyhunt.util.Util;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -29,12 +28,6 @@ public class PlayerServerListener implements Listener {
             net.mcxk.hjyhunt.util.Util.buildTextComponent(" - ", false, ChatColor.WHITE),
             net.mcxk.hjyhunt.util.Util.buildTextComponent("观战", true, ChatColor.GRAY, "/hjyhunt want waiting"),
     };
-    private static final BaseComponent[] CONFIRM_PREPARE = new BaseComponent[]{
-            net.mcxk.hjyhunt.util.Util.buildTextComponent("请确认是否开始游戏：", false, ChatColor.YELLOW),
-            net.mcxk.hjyhunt.util.Util.buildTextComponent("等待(默认)", true, ChatColor.RED, "/hjyhunt prepare false"),
-            net.mcxk.hjyhunt.util.Util.buildTextComponent(" - ", false, ChatColor.WHITE),
-            Util.buildTextComponent("准备", true, ChatColor.GREEN, "/hjyhunt prepare true"),
-    };
     private final HJYHunt plugin = HJYHunt.getInstance();
 
     /**
@@ -49,14 +42,7 @@ public class PlayerServerListener implements Listener {
                 if (plugin.getGame().isSelectTeam()) {
                     player.spigot().sendMessage(SELECT_INTENTION_ROLE);
                 }
-                if (plugin.getGame().isConfirmPrepare()) {
-                    plugin.getGame().getPlayerPrepare().put(player, false);
-                    player.spigot().sendMessage(CONFIRM_PREPARE);
-                    player.setGlowing(true);
-                } else {
-                    player.setGlowing(false);
-                    plugin.getGame().getPlayerPrepare().put(player, true);
-                }
+                player.setGlowing(false);
                 player.setGameMode(GameMode.ADVENTURE);
             } else {
                 player.sendMessage("当前游戏已满人，已自动加入观战者队列");
@@ -97,7 +83,6 @@ public class PlayerServerListener implements Listener {
         final Player player = event.getPlayer();
         player.setGlowing(false);
         plugin.getGame().getIntentionRoleMapping().remove(player);
-        plugin.getGame().getPlayerPrepare().remove(player);
         // 处理正在游戏的玩家
         if (plugin.getGame().getStatus().equals(GameStatus.GAME_STARTED)
                 && plugin.getGame().getInGamePlayers().contains(player)) {
