@@ -4,6 +4,9 @@ LevelSeed: false
 #下一个种子行数（0为第一行）
 LevelSeedNum: 0
 
+#玩家断开连接后的可重连时间（秒）
+reJoinTime: 180
+
 #本局最大玩家数
 max-players: 16
 
@@ -43,9 +46,6 @@ L3Runner: 4
 
 #是否允许选择队伍
 SelectTeam: true
-
-#是否需要手动确认准备
-ConfirmPrepare: false
 
 #最小准备就绪玩家数量（-1所有）
 MinPrepare: -1

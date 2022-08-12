@@ -11,6 +11,11 @@ import java.util.List;
 public class ReconnectWatcher {
     private final HJYHunt plugin = HJYHunt.getInstance();
 
+    /**
+     * 超时的判定时间（毫秒）
+     */
+    private final int reJoinTime = HJYHunt.getInstance().getConfig().getInt("reJoinTime") * 1000;
+
     public ReconnectWatcher() {
         new BukkitRunnable() {
             @Override
@@ -20,11 +25,11 @@ public class ReconnectWatcher {
                 }
                 List<Player> removing = new ArrayList<>();
                 plugin.getGame().getReconnectTimer().forEach((key, value) -> {
-                    if (System.currentTimeMillis() - value > 1000 * 600) {
+                    if (System.currentTimeMillis() - value > reJoinTime) {
                         removing.add(key);
                     }
                 });
-                //Remove timeout players from the their team.
+                // 将超时未重连的玩家从队伍中移除
                 removing.forEach(player -> {
                     plugin.getGame().getReconnectTimer().remove(player);
                     if (player.isOnline()) {
