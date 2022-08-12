@@ -87,12 +87,7 @@ public class Game {
      * 最小准备就绪玩家数量（-1所有）
      */
     @Getter
-    private final int MinPrepare = plugin.getConfig().getInt("MinPrepare");
-    @Getter
-    private final int maxPlayers = plugin.getConfig().getInt("max-players");
-    @Getter
     private final int countdown = plugin.getConfig().getInt("Countdown");
-    private final int minPlayers = plugin.getConfig().getInt("min-players");
     private final int L0Player = plugin.getConfig().getInt("L0Player");
     private final int L0Runner = plugin.getConfig().getInt("L0Runner");
     private final int L1Player = plugin.getConfig().getInt("L1Player");
@@ -101,6 +96,9 @@ public class Game {
     private final int L2Runner = plugin.getConfig().getInt("L2Runner");
     private final int L3Player = plugin.getConfig().getInt("L3Player");
     private final int L3Runner = plugin.getConfig().getInt("L3Runner");
+    @Getter
+    private final int maxPlayers = L3Player;
+    private final int minPlayers = L0Player;
     private final int XRandom = plugin.getConfig().getInt("XRandom");
     private final int XBasic = plugin.getConfig().getInt("XBasic");
     private final int YRandom = plugin.getConfig().getInt("YRandom");

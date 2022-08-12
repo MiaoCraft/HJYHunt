@@ -4,8 +4,8 @@ main: net.mcxk.hjyhunt.HJYHunt
 authors: [ MossCG, LingMuQingYu, Crsuh2er0 ]
 website: https://github.com/MiaoCraft/HJYHunt
 api-version: 1.16
-# 未使用: NoteBlockAPI
-soft-depend: [ AdvancedReplay, PlaceholderAPI ]
+softdepend:
+  - AdvancedReplay
 
 commands:
   hjyhunt:

@@ -13,19 +13,14 @@ judgeWinnerWhenLeaveEnd: true
 #玩家断开连接后的可重连时间（秒）
 reJoinTime: 180
 
-#本局最大玩家数
-max-players: 16
-
-#本局最小玩家数（不达到这个数量不会开局）
-min-players: 2
-
 #本局最大Runner数（这东西我基本用不到了但是还是不敢删免得出问题）
 runner-max: 2
 
 # 是否开启友伤
 FriendsHurt: false
 
-#第零阶梯玩家数量（大于等于该数量Runner会设置对应阶梯数量，下同）
+#第零阶梯玩家数量（同时也是最小玩家数量）
+#（大于等于该数量Runner会设置对应阶梯数量，下同）
 #如L0Player=2 L0Hunter=1即在总玩家达到2及以上的时候，猎人数为1）
 L0Player: 2
 
@@ -44,7 +39,7 @@ L2Player: 12
 #第二阶梯逃亡者数量
 L2Runner: 3
 
-#第三阶梯玩家数量
+#第三阶梯玩家数量（同时也是最大玩家数量）
 L3Player: 16
 
 #第三阶梯逃亡者数量
@@ -52,9 +47,6 @@ L3Runner: 4
 
 #是否允许选择队伍
 SelectTeam: true
-
-#最小准备就绪玩家数量（-1所有）
-MinPrepare: -1
 
 #是否开局解锁指南针
 CompassUnlocked: true
