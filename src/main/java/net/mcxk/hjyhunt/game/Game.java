@@ -61,12 +61,6 @@ public class Game {
     @Getter
     private final Map<Player, net.mcxk.hjyhunt.game.PlayerRole> intentionRoleMapping = Maps.newConcurrentMap();
     /**
-     * 玩家是否准备就绪
-     * 线程安全
-     */
-    @Getter
-    private final Map<Player, Boolean> playerPrepare = Maps.newConcurrentMap();
-    /**
      * 是否游戏结束后先踢出所有玩家
      */
     @Getter
@@ -460,7 +454,6 @@ public class Game {
 
     private void registerWatchers() {
         new RadarWatcher();
-//        new CompassWatcher();
         new ReconnectWatcher();
         new PlayerMoveWatcher();
     }
