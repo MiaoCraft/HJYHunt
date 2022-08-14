@@ -1,5 +1,5 @@
 #种子获取方式
-# 0 = 随机 | 1 = ./plugins/HJYHunt/seeds.txt | 2 = 网络筛种
+# 0 = 随机 | 1 = ./plugins/MiniHunt/seeds.txt | 2 = 网络筛种
 seedFrom: 2
 
 #第1种方式的要获取的第一个种子行数

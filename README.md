@@ -1,4 +1,4 @@
-# HJYHunt
+# MiniHunt
 
 这是一个完全开源的MineHunt分支
 
