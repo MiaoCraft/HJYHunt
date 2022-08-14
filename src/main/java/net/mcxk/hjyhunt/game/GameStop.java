@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class GameStop {
     static HJYHunt plugin = HJYHunt.getInstance();
     static Game game = new Game();
+
     private GameStop() {
     }
 
@@ -32,7 +33,7 @@ public class GameStop {
             player.teleport(Util.lookAt(player.getEyeLocation(), location));
         });
         game.setStatus(GameStatus.ENDED);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "游戏结束! 服务器将在30秒后重新启动！");
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "游戏结束! 服务器将在 60 秒后重新启动！");
         String runnerNames = Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList()));
         String hunterNames = Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList()));
 
@@ -80,7 +81,7 @@ public class GameStop {
             player.setGameMode(GameMode.SPECTATOR);
         });
         game.setStatus(GameStatus.ENDED);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "游戏结束! 服务器将在30秒后重新启动！");
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "游戏结束! 服务器将在 60 秒后重新启动！");
         String runnerNames = Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList()));
         String hunterNames = Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList()));
 

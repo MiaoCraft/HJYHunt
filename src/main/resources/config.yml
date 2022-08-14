@@ -1,8 +1,15 @@
-#指定种子（需要在当前配置目录放种子文件seeds.txt，每行一个种子）
-LevelSeed: false
+#种子获取方式
+# 0 = 随机 | 1 = ./plugins/HJYHunt/seeds.txt | 2 = 网络筛种
+seedFrom: 2
 
-#下一个种子行数（0为第一行）
+#第1种方式的要获取的第一个种子行数
+#（0为第一行，所以填在这里的行数要-1）
+#每次关闭服务器都会+1
 LevelSeedNum: 0
+
+#筛种码
+#自定义链接：http://www.crsuh2er0.top/fsgcn/
+filterCode: 0000000000000000000000000000000000000000000000000002000200020002C
 
 #是否在一个队伍的玩家全部掉线时直接结束游戏
 endWhenAllLeave: true
@@ -13,15 +20,12 @@ judgeWinnerWhenLeaveEnd: true
 #玩家断开连接后的可重连时间（秒）
 reJoinTime: 180
 
-#本局最大Runner数（这东西我基本用不到了但是还是不敢删免得出问题）
-runner-max: 2
-
 # 是否开启友伤
 FriendsHurt: false
 
 #第零阶梯玩家数量（同时也是最小玩家数量）
 #（大于等于该数量Runner会设置对应阶梯数量，下同）
-#如L0Player=2 L0Hunter=1即在总玩家达到2及以上的时候，猎人数为1）
+#如L0Player=2 L0Hunter=1即在总玩家达到2及以上的时候，猎人数为1）a
 L0Player: 2
 
 #第零阶梯逃亡者数量
@@ -53,9 +57,6 @@ CompassUnlocked: true
 
 #是否结束游戏自动踢出所有玩家
 AutoKick: true
-
-#是否结束游戏自动重启
-AutoRestart: true
 
 #逃亡者X轴偏移（Basic为基础偏移，Random为随机值）
 #实际偏移量为（Basic+Random）

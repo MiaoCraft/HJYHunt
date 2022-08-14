@@ -1,7 +1,7 @@
 package net.mcxk.hjyhunt.game;
 
 import net.mcxk.hjyhunt.HJYHunt;
-import net.mcxk.hjyhunt.util.EndKick;
+import net.mcxk.hjyhunt.util.GameEnd;
 import org.bukkit.Bukkit;
 
 /**
@@ -20,10 +20,7 @@ public class LeaveEnding {
             GameStop.stop(winner);
         }
         Bukkit.broadcastMessage("由于比赛的一方所有人全部掉线，游戏被迫终止。");
-        Bukkit.broadcastMessage("服务器将会在 10 秒钟后重新启动。");
-        Bukkit.getScheduler().runTaskLater(HJYHunt.getInstance(), () -> {
-            EndKick.kickAllPlayer();
-            Bukkit.shutdown();
-        }, 20);
+        Bukkit.broadcastMessage("服务器将会在 60 秒钟后重新启动。");
+        Bukkit.getScheduler().runTaskLater(HJYHunt.getInstance(), GameEnd::startEnd, 20);
     }
 }

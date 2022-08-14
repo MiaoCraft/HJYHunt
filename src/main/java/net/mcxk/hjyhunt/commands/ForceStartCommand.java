@@ -19,8 +19,8 @@ public class ForceStartCommand {
             SendMessage.sendMessage(String.format("%s你没有执行该命令的权限。", ChatColor.RED), sender);
             return true;
         }
-        if (game.getInGamePlayers().size() < 2) {
-            SendMessage.sendMessage(String.format("%s错误：玩家不足，不能开始。", ChatColor.RED), sender);
+        if (game.getInGamePlayers().isEmpty()) {
+            SendMessage.sendMessage(String.format("%s游戏中没有玩家，无法开始游戏。", ChatColor.RED), sender);
             return true;
         }
         if (game.getStatus() != net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS) {

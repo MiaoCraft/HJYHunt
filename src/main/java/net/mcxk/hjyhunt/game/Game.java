@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import net.mcxk.hjyhunt.HJYHunt;
 import net.mcxk.hjyhunt.replay.GameRecord;
-import net.mcxk.hjyhunt.util.EndKick;
+import net.mcxk.hjyhunt.util.GameEnd;
 import net.mcxk.hjyhunt.util.GameEndingData;
 import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.mcxk.hjyhunt.util.Util;
@@ -89,21 +89,20 @@ public class Game {
     @Getter
     private final int countdown = plugin.getConfig().getInt("Countdown");
     private final int L0Player = plugin.getConfig().getInt("L0Player");
+    private final int minPlayers = L0Player;
     private final int L0Runner = plugin.getConfig().getInt("L0Runner");
     private final int L1Player = plugin.getConfig().getInt("L1Player");
     private final int L1Runner = plugin.getConfig().getInt("L1Runner");
     private final int L2Player = plugin.getConfig().getInt("L2Player");
     private final int L2Runner = plugin.getConfig().getInt("L2Runner");
     private final int L3Player = plugin.getConfig().getInt("L3Player");
-    private final int L3Runner = plugin.getConfig().getInt("L3Runner");
     @Getter
     private final int maxPlayers = L3Player;
-    private final int minPlayers = L0Player;
+    private final int L3Runner = plugin.getConfig().getInt("L3Runner");
     private final int XRandom = plugin.getConfig().getInt("XRandom");
     private final int XBasic = plugin.getConfig().getInt("XBasic");
     private final int YRandom = plugin.getConfig().getInt("YRandom");
     private final int YBasic = plugin.getConfig().getInt("YBasic");
-    private final boolean AutoRestart = plugin.getConfig().getBoolean("AutoRestart");
     @Getter
     private final boolean friendsHurt = plugin.getConfig().getBoolean("FriendsHurt");
     private final boolean endWhenAllLeave = plugin.getConfig().getBoolean("endWhenAllLeave");
@@ -407,12 +406,7 @@ public class Game {
         Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.GREEN + plugin.getConfig().getString("ServerName"), plugin.getConfig().getString("ServerGame"), 0, 20000, 0));
         Thread.sleep(sleep);
         Bukkit.getOnlinePlayers().forEach(Player::resetTitle);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            EndKick.kickAllPlayer();
-            if (AutoRestart) {
-                Bukkit.shutdown();
-            }
-        }, 20);
+        Bukkit.getScheduler().runTaskLater(plugin, GameEnd::startEnd, 20);
     }
 
 
