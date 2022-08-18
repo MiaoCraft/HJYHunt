@@ -1,15 +1,11 @@
 #种子获取方式
-# 0 = 随机 | 1 = ./plugins/HJYHunt/seeds.txt | 2 = 网络筛种
-seedFrom: 2
+# 0 = 随机 | 1 = ./plugins/HJYHunt/seeds.txt
+seedFrom: 0
 
 #第1种方式的要获取的第一个种子行数
 #（0为第一行，所以填在这里的行数要-1）
 #每次关闭服务器都会+1
 LevelSeedNum: 0
-
-#筛种码
-#自定义链接：http://www.crsuh2er0.top/fsgcn/
-filterCode: 0000000000000000000000000000000000000000000000000002000200020002C
 
 #是否在一个队伍的玩家全部掉线时直接结束游戏
 endWhenAllLeave: true

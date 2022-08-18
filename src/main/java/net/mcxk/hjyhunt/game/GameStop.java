@@ -1,7 +1,6 @@
 package net.mcxk.hjyhunt.game;
 
 import net.mcxk.hjyhunt.HJYHunt;
-import net.mcxk.hjyhunt.replay.GameRecord;
 import net.mcxk.hjyhunt.util.GetPlayerAsRole;
 import net.mcxk.hjyhunt.util.MusicPlayer;
 import net.mcxk.hjyhunt.util.StatisticsBaker;
@@ -48,14 +47,6 @@ public class GameStop {
             GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(player -> player.sendTitle(ChatColor.GOLD + "胜利", "成功战胜了末影龙", 0, 2000, 0));
             GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(player -> player.sendTitle(ChatColor.RED + "游戏结束", "未能阻止末影龙死亡", 0, 2000, 0));
         }
-        if (Bukkit.getPluginManager().isPluginEnabled("AdvancedReplay")) {
-            try {
-                GameRecord.stop(game);
-                Bukkit.broadcastMessage("游戏录制已保存：" + GameRecord.ROUND_UNIQUE_ID);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         try {
             new MusicPlayer().playEnding();
         } catch (Exception e) {
@@ -95,14 +86,6 @@ public class GameStop {
             Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "恭喜：" + runnerNames);
             GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).forEach(player -> player.sendTitle(ChatColor.GOLD + "胜利", "成功战胜了末影龙", 0, 2000, 0));
             GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).forEach(player -> player.sendTitle(ChatColor.RED + "游戏结束", "未能阻止末影龙死亡", 0, 2000, 0));
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("AdvancedReplay")) {
-            try {
-                GameRecord.stop(game);
-                Bukkit.broadcastMessage("游戏录制已保存：" + GameRecord.ROUND_UNIQUE_ID);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
         try {
             new MusicPlayer().playEnding();

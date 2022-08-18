@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -77,19 +76,6 @@ public class GameEnd {
                     e.printStackTrace();
                 }
                 Bukkit.shutdown();
-                return;
-            case 2:
-                Bukkit.getScheduler().runTaskAsynchronously(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(HJYHunt.pluginName)), task -> {
-                    HJYHunt.getInstance().getLogger().info("开始筛种...");
-                    try (final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(Files.newOutputStream(propertiesFile.toPath()), StandardCharsets.UTF_8)) {
-                        seed.set(SeedFilter.getSeed());
-                        server.setProperty("level-seed", seed.get());
-                        server.store(outputStreamWriter, "propeties,write:level-seed");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Bukkit.shutdown();
-                });
                 return;
             default:
                 HJYHunt.getInstance().getLogger().info("种子获取方式配置错误！将使用随机种子！");

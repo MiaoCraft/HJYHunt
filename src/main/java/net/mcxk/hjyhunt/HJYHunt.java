@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -52,10 +51,6 @@ public final class HJYHunt extends JavaPlugin {
         if (Objects.nonNull(HJYHuntCommand)) {
             HJYHuntCommand.setExecutor(new HJYHuntCommand());
             HJYHuntCommand.setTabCompleter(new TabComplete());
-        }
-        Plugin pluginAdvancedReplay = Bukkit.getPluginManager().getPlugin("AdvancedReplay");
-        if (pluginAdvancedReplay != null) {
-            getLogger().info("检测到AdvancedReplay插件，回放功能已启用！");
         }
         game.switchWorldRuleForReady(false);
         Bukkit.getPluginManager().registerEvents(new net.mcxk.hjyhunt.listener.PlayerServerListener(), this);

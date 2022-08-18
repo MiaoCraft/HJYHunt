@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import net.mcxk.hjyhunt.HJYHunt;
-import net.mcxk.hjyhunt.replay.GameRecord;
 import net.mcxk.hjyhunt.util.GameEnd;
 import net.mcxk.hjyhunt.util.GameEndingData;
 import net.mcxk.hjyhunt.util.GetPlayerAsRole;
@@ -221,8 +220,8 @@ public class Game {
             LeaveEnding.leaveEnd(PlayerRole.RUNNER);
         } else {
             Bukkit.broadcastMessage("玩家：" + player.getName() + " 因长时间未能重新连接回对战而被从列表中剔除");
-            Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
-            Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
+            Bukkit.broadcastMessage(ChatColor.GREEN + "猎人: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
+            Bukkit.broadcastMessage(ChatColor.RED + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
         }
     }
 
@@ -231,14 +230,6 @@ public class Game {
             return;
         }
         status = net.mcxk.hjyhunt.game.GameStatus.GAME_STARTED;
-        if (Bukkit.getPluginManager().isPluginEnabled("AdvancedReplay")) {
-            Bukkit.broadcastMessage("请稍等，正在启动游戏录制...");
-            try {
-                GameRecord.record(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         Bukkit.broadcastMessage("请稍后，系统正在随机分配玩家身份...");
 
         List<Player> noRolesPlayers = new ArrayList<>(inGamePlayers);
@@ -306,8 +297,8 @@ public class Game {
         Bukkit.broadcastMessage(ChatColor.AQUA + "在游戏过程中，当你解锁特定的游戏阶段时，全体玩家将会获得阶段奖励，可能是特定物品也可能是增益效果。");
         Bukkit.broadcastMessage(ChatColor.AQUA + "猎人可以通过合成指南针来定位逃亡者的方向；逃亡者可以通过合成指南针摧毁猎人的指南针。");
         Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "祝君好运，末地见！");
-        Bukkit.broadcastMessage(ChatColor.RED + "猎人: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
-        Bukkit.broadcastMessage(ChatColor.GREEN + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
+        Bukkit.broadcastMessage(ChatColor.GREEN + "猎人: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).stream().map(Player::getName).collect(Collectors.toList())));
+        Bukkit.broadcastMessage(ChatColor.RED + "逃亡者: " + Util.list2String(GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).stream().map(Player::getName).collect(Collectors.toList())));
         this.registerWatchers();
         plugin.getGame().getProgressManager().unlockProgress(GameProgress.GAME_STARTING, null);
     }
