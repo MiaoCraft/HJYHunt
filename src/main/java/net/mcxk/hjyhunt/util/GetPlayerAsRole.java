@@ -3,7 +3,6 @@ package net.mcxk.hjyhunt.util;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 import lombok.Setter;
-import net.mcxk.hjyhunt.game.Game;
 import net.mcxk.hjyhunt.game.PlayerRole;
 import org.bukkit.entity.Player;
 
@@ -17,10 +16,9 @@ import java.util.stream.Collectors;
  * @apiNote
  */
 public class GetPlayerAsRole {
-    static Game game = new Game();
     @Getter
     @Setter
-    private static Map<Player, net.mcxk.hjyhunt.game.PlayerRole> roleMapping = Maps.newConcurrentMap();
+    private static Map<Player, PlayerRole> roleMapping = Maps.newConcurrentMap();
 
     private GetPlayerAsRole() {
     }
