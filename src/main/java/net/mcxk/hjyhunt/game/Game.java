@@ -194,14 +194,27 @@ public class Game {
     }
 
     public void playerLeaving(Player player) {
-        if (status == net.mcxk.hjyhunt.game.GameStatus.WAITING_PLAYERS) {
+        if (status == GameStatus.WAITING_PLAYERS) {
             this.inGamePlayers.remove(player);
         } else {
+            if(GetPlayerAsRole.getRoleMapping().get(player) == PlayerRole.WAITING){
+                return;
+            }
             if (endWhenAllLeave) {
-                if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.RUNNER).isEmpty()) {
+                boolean runnerHasOnline = false;
+                boolean hunterHasOnline = false;
+                for(Player p : inGamePlayers){
+                    if(GetPlayerAsRole.getRoleMapping().get(p) == PlayerRole.RUNNER){
+                        runnerHasOnline = true;
+                    }
+                    if(GetPlayerAsRole.getRoleMapping().get(p) == PlayerRole.HUNTER){
+                        hunterHasOnline = true;
+                    }
+                }
+                if (!runnerHasOnline) {
                     LeaveEnding.leaveEnd(PlayerRole.HUNTER);
                 }
-                if (GetPlayerAsRole.getPlayersAsRole(net.mcxk.hjyhunt.game.PlayerRole.HUNTER).isEmpty()) {
+                if (!hunterHasOnline) {
                     LeaveEnding.leaveEnd(PlayerRole.RUNNER);
                 }
             } else {
@@ -209,6 +222,7 @@ public class Game {
             }
         }
     }
+
 
     public void playerLeft(Player player) {
         GetPlayerAsRole.getRoleMapping().remove(player);
