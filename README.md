@@ -1,5 +1,7 @@
 # HJYHunt
 
+## 此repo已归并入https://github.com/MiaoCraft/MiniHunt
+
 这是一个完全开源的MineHunt分支
 
 遵循GPLV3协议
